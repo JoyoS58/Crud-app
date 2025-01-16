@@ -84,12 +84,12 @@
 
                     <!-- Submit Button -->
                     <div class="d-flex justify-content-between mt-4">
-                        <button type="submit" class="btn btn-warning px-4 py-2">
-                            <i class="fas fa-save"></i> Update Member
-                        </button>
                         <a href="{{ route('members.index') }}" class="btn btn-secondary px-4 py-2">
                             <i class="fas fa-arrow-left"></i> Back to List
                         </a>
+                        <button type="submit" class="btn btn-warning px-4 py-2">
+                            <i class="fas fa-save"></i> Update Member
+                        </button>
                     </div>
                 </form>
             </div>

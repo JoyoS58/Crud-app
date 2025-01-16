@@ -82,12 +82,12 @@
 
                     <!-- Submit Button -->
                     <div class="d-flex justify-content-between mt-4">
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-save"></i> Create Group
-                        </button>
                         <a href="{{ route('groups.index') }}" class="btn btn-secondary">
                             <i class="fas fa-arrow-left"></i> Back to List
                         </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Create Group
+                        </button>
                     </div>
                 </form>
             </div>

@@ -5,7 +5,7 @@
         <!-- Page Title -->
         <div class="text-center mb-4">
             <h1 class="display-4 font-weight-bold text-primary">{{ $activity->activity_name }}</h1>
-            <p class="text-muted">{{ $activity->activity_description ?? 'No description available.' }}</p>
+            <p class="text-muted">{{ $activity->description ?? 'No description available.' }}</p>
             <hr class="my-4" style="border-top: 2px solid #007bff; width: 50%;">
         </div>
 

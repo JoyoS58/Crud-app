@@ -66,8 +66,8 @@ class MemberController extends Controller
     {
         try {
             $validated = $request->validated();
-            $data = $validated->only(['userId', 'groupId', 'join_date', 'status', 'role_in_group']);
-            $this->memberService->updateMember($id, $data);
+            // $data = $validated->only(['userId', 'groupId', 'join_date', 'status', 'role_in_group']);
+            $this->memberService->updateMember($id, $validated);
 
             return redirect()->route('members.index')->with('success', 'Member updated successfully');
         } catch (\Exception $e) {

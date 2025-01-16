@@ -48,7 +48,7 @@
                                     <td>{{ $member->user->name }} ({{ $member->user->email }})</td>
                                     <!-- User Name and Email -->
                                     <td>{{ $member->group->name ?? 'None' }}</td> <!-- Group Name -->
-                                    <td>{{ $member->join_date ? $member->join_date->format('d-m-Y H:i:s') : 'No Date' }}
+                                    <td>{{ $member->join_date ? $member->join_date: 'No Date' }}
                                     </td> <!-- Join Date -->
                                     <td>
                                         <span class="badge badge-{{ $member->status == 'active' ? 'success' : 'danger' }}">

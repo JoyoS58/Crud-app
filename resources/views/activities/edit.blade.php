@@ -64,22 +64,22 @@
 
                     <!-- Activity Description -->
                     <div class="mb-4">
-                        <label for="activity_description" class="form-label font-weight-bold">Activity Description</label>
-                        <textarea class="form-control @error('activity_description') is-invalid @enderror" id="activity_description"
-                            name="activity_description">{{ old('activity_description', $activity->activity_description) }}</textarea>
-                        @error('activity_description')
+                        <label for="description" class="form-label font-weight-bold">Activity Description</label>
+                        <textarea class="form-control @error('description') is-invalid @enderror" id="description"
+                            name="description">{{ old('description', $activity->description) }}</textarea>
+                        @error('description')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
 
                     <!-- Submit Button -->
                     <div class="d-flex justify-content-between mt-4">
-                        <button type="submit" class="btn btn-warning px-4 py-2">
-                            <i class="fas fa-save"></i> Update Activity
-                        </button>
                         <a href="{{ route('activities.index') }}" class="btn btn-secondary px-4 py-2">
                             <i class="fas fa-arrow-left"></i> Back to List
                         </a>
+                        <button type="submit" class="btn btn-warning px-4 py-2">
+                            <i class="fas fa-save"></i> Update Activity
+                        </button>
                     </div>
                 </form>
             </div>
