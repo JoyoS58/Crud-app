@@ -40,10 +40,18 @@ class RoleService implements RoleServiceInterface
 
     public function addUserToRole($roleId, $userId)
     {
+        // Get the role by ID
         $role = $this->roleRepository->getRoleById($roleId);
-        $role->users()->attach($userId);
+
+        // Check if the user is already assigned to the role
+        if (!$role->users->contains($userId)) {
+            // Attach the user to the role
+            $role->users()->attach($userId);
+        }
+
         return $role;
     }
+
 
 
     public function removeUserFromRole($roleId, $userId)

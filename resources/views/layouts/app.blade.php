@@ -16,29 +16,15 @@
             left: 0;
             height: 100%;
             width: 16.666%;
-            background-color: #343a40;
-            color: #fff;
+            background-color: #fff;
+            color: #343a40;
             padding: 50px 30px;
             overflow-y: auto;
             transition: all 0.3s ease;
-            border-radius: 0 50px 50px 0;
+            border-width: 10px;
+            border-color: #007bff;
         }
-        /* .header {
-            position: sticky;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 5%;
-            width: 100%;
-            background-color: #343a40;
-            color: #fff;
-            padding: 10px 6px;
-            overflow-y: auto;
-            transition: all 0.3s ease;
-            border-radius: 70px 0px 70px 0;
-        } */
-
-
+        
         .sidebar h4 a {
             text-decoration: none;
             color: inherit;
@@ -62,7 +48,7 @@
 
         /* Active and Hover State */
         .nav-link:hover {
-            background-color: #575757;
+            background-color: #007bff;
             color: #fff;
         }
 
@@ -81,46 +67,55 @@
 </head>
 
 <body>
-    <div class="container-fluid vh-100">
+    <div>
+    <div class="container-fluid vh-100 card shadow">
         <div class="header">Header</div>
         <!-- Sidebar -->
-        <div class="sidebar">
+        
+        <div class="sidebar shadow">
             <div class="d-flex align-items-center mb-4">
                 <h4><i class="fas fa-house-user mr-2" style="color: #0065d1;"></i>
-                    <a href="/">Dashboard</a>
+                    <a href="{{ route('dashboard') }}">Dashboard</a>
                 </h4>
             </div>
             <ul class="nav nav-pills flex-column mt-3">
                 <li class="nav-item">
                     <a class="nav-link {{ Request::routeIs('users*') ? 'active' : '' }}"
                         href="{{ route('users.index') }}">
-                        <i class="fas fa-users"></i>User Management
+                        <i class="fas fa-users"></i>User
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link {{ Request::routeIs('roles*') ? 'active' : '' }}"
                         href="{{ route('roles.index') }}">
-                        <i class="fas fa-user-shield"></i>Role Management
+                        <i class="fas fa-user-shield"></i>Role
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link {{ Request::routeIs('groups*') ? 'active' : '' }}"
                         href="{{ route('groups.index') }}">
-                        <i class="fas fa-layer-group"></i>Group Management
+                        <i class="fas fa-layer-group"></i>Group
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link {{ Request::routeIs('members*') ? 'active' : '' }}"
                         href="{{ route('members.index') }}">
-                        <i class="fas fa-id-badge"></i>Member Management
+                        <i class="fas fa-id-badge"></i>Member
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link {{ Request::routeIs('activities*') ? 'active' : '' }}"
                         href="{{ route('activities.index') }}">
-                        <i class="fas fa-tasks"></i>Activity Management
+                        <i class="fas fa-tasks"></i>Activity
                     </a>
                 </li>
+
+                <form action="{{ route('logout') }}" method="POST" class="mt-3">
+                    @csrf
+                    <button type="submit" class="btn btn-danger btn-block">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </form>
             </ul>
         </div>
 

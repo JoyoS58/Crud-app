@@ -73,11 +73,14 @@ class RoleController extends Controller
     // Menambahkan user ke role
     public function addUserToRole(AddUserToRoleRequest $request, $roleId)
     {
-        
         try {
+            // Validate the request
             $validated = $request->validated();
+
+            // Add the user to the role
             $this->roleService->addUserToRole($roleId, $validated['userId']);
 
+            // Redirect with success message
             return redirect()->route('roles.show', $roleId)->with('success', 'User added to role successfully.');
         } catch (\Exception $e) {
             return redirect()->back()->withErrors(['error' => 'Failed to add user to role: ' . $e->getMessage()]);

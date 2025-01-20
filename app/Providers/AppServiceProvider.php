@@ -13,6 +13,8 @@ use App\Repositories\MemberRepositoryInterface;
 use App\Repositories\MemberRepository;
 use App\Repositories\ActivityRepositoryInterface;
 use App\Repositories\ActivityRepository;
+use App\Repositories\AuthRepository;
+use App\Repositories\AuthRepositoryInterface;
 use App\Services\UserServiceInterface;
 use App\Services\UserService;
 use App\Services\RoleServiceInterface;
@@ -23,6 +25,7 @@ use App\Services\MemberServiceInterface;
 use App\Services\MemberService;
 use App\Services\ActivityServiceInterface;
 use App\Services\ActivityService;
+use App\Services\AuthService;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -42,6 +45,11 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(GroupServiceInterface::class, GroupService::class);
         $this->app->bind(MemberServiceInterface::class, MemberService::class);
         $this->app->bind(ActivityServiceInterface::class, ActivityService::class);
+
+        $this->app->bind(AuthRepositoryInterface::class, AuthRepository::class);
+        $this->app->bind(AuthService::class, function ($app) {
+            return new AuthService($app->make(AuthRepositoryInterface::class));
+        });
     }
 
     /**

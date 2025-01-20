@@ -8,7 +8,7 @@ class StoreUserRequest extends FormRequest
 {
     public function authorize()
     {
-        return true; // Sesuaikan dengan kebutuhan authorization
+        return true; 
     }
 
     public function rules()

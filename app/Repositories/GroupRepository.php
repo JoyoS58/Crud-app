@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\Group;
+use App\Models\GroupUser;
 
 class GroupRepository implements GroupRepositoryInterface
 {
@@ -15,7 +16,7 @@ class GroupRepository implements GroupRepositoryInterface
     {
         return Group::with('users')->findOrFail($id);
     }
-    
+
     public function createGroup(array $data)
     {
         return Group::create($data);
@@ -32,5 +33,25 @@ class GroupRepository implements GroupRepositoryInterface
     {
         $group = $this->getGroupById($id);
         $group->delete();
+    }
+    public function updateGroupWithUsers($groupId, array $groupData, array $userIds)
+    {
+        $group = $this->getGroupById($groupId); // Ensure the group exists
+
+        if (!$group) {
+            throw new \Exception('Group not found');
+        }
+
+        // Update group data
+        $group->update($groupData);
+
+        // Sync users
+        $group->members()->sync($userIds);
+
+        return $group;
+    }
+    public function getAllGroupUsers()
+    {
+        return GroupUser::all();
     }
 }

@@ -68,7 +68,9 @@
                 <label for="userId" class="form-label">Select User</label>
                 <select name="userId" id="userId" class="form-select" required>
                     @foreach ($users as $user)
-                        <option value="{{ $user->user_id }}">{{ $user->name }} ({{ $user->email }})</option>
+                        @if (!in_array($user->user_id, $role->users->pluck('user_id')->toArray()))
+                            <option value="{{ $user->user_id }}">{{ $user->name }} ({{ $user->email }})</option>
+                        @endif
                     @endforeach
                 </select>
             </div>

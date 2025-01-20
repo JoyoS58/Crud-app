@@ -6,6 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateUserRequest extends FormRequest
 {
+
     public function authorize()
     {
         return true;
@@ -13,10 +14,10 @@ class UpdateUserRequest extends FormRequest
 
     public function rules()
     {
-        $userId = $this->route('id');        
+        $userId = $this->route('id'); 
         return [
             'name' => 'required|string',
-            'email' => 'required|email|unique:users,email' . $userId,
+            'email' => 'required|email|unique:users,email',
             'password' => 'nullable|string|min:8',
         ];
     }

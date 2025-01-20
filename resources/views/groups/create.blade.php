@@ -59,19 +59,22 @@
 
                     <!-- Assign Users -->
                     <div class="mb-3">
-                        <label for="user_id" class="form-label font-weight-bold">Assign Users</label>
-                        <select name="user_ids[]" id="user_ids" class="form-control @error('user_ids') is-invalid @enderror" multiple>
+                        <label for="user_ids" class="form-label font-weight-bold">Assign Users</label>
+                        <div id="user_ids" class="@error('user_ids') is-invalid @enderror">
                             @foreach ($users as $user)
-                                <option value="{{ $user->user_id }}" {{ in_array($user->user_id, old('user_ids', [])) ? 'selected' : '' }}>
-                                    {{ $user->name }} ({{ $user->email }})
-                                </option>
+                                <div class="form-check">
+                                    <input type="checkbox" name="user_ids[]" id="user_{{ $user->user_id }}"
+                                        value="{{ $user->user_id }}" class="form-check-input"
+                                        {{ in_array($user->user_id, old('user_ids', [])) ? 'checked' : '' }}>
+                                    <label for="user_{{ $user->user_id }}" class="form-check-label">
+                                        {{ $user->name }} ({{ $user->email }})
+                                    </label>
+                                </div>
                             @endforeach
-                        </select>
-                        
-                        
+                        </div>
 
                         <small class="form-text text-muted">
-                            Hold Ctrl (Windows) or Command (Mac) to select multiple users.
+                            Select the users to assign.
                         </small>
                         @error('user_ids')
                             <span class="invalid-feedback" role="alert">

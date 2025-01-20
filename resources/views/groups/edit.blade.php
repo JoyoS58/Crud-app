@@ -51,6 +51,28 @@
                         @enderror
                     </div>
 
+                    <!-- Users Checkboxes -->
+                    <div class="mb4">
+                        <label class="form-label font-weight-bold">Select Users</label><br>
+                        <div class="row">
+
+                            @foreach ($users as $user)
+                            <div class="form-check ml-4">
+                                <input type="checkbox" name="user_ids[]" value="{{ $user->user_id }}"
+                                class="form-check-input @error('user_ids') is-invalid @enderror"
+                                id="user_{{ $user->user_id }}"
+                                {{ in_array($user->user_id, $group->members->pluck('user_id')->toArray()) ? 'checked' : '' }}>
+                                <label class="form-check-label" for="user_{{ $user->user_id }}">
+                                    {{ $user->name }}
+                                </label>
+                            </div>
+                            @endforeach
+                        </div>
+                        @error('user_ids')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
                     <!-- Submit Button -->
                     <div class="d-flex justify-content-between mt-4">
                         <a href="{{ route('groups.index') }}" class="btn btn-secondary px-4 py-2">
@@ -70,14 +92,16 @@
     <style>
         /* Form and Card Styling */
         .form-control,
-        .form-select {
+        .form-select,
+        .form-check-input {
             border-radius: 8px;
             font-size: 1rem;
             padding: 12px 16px;
         }
 
         .form-control:focus,
-        .form-select:focus {
+        .form-select:focus,
+        .form-check-input:focus {
             box-shadow: 0 0 5px rgba(0, 123, 255, 0.8);
             border-color: #007bff;
         }
@@ -140,6 +164,11 @@
             margin-right: auto;
         }
 
+        .form-check {
+            margin-bottom: 1rem;
+            column-fill: auto;
+        }
+
         /* Align form container */
         .card-body {
             max-width: 600px;
@@ -148,3 +177,4 @@
         }
     </style>
 @endsection
+

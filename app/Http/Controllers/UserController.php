@@ -49,10 +49,8 @@ class UserController extends Controller
     // Memperbarui data pengguna
     public function update(UpdateUserRequest $request, $id)
     {
-        // Get the validated data from the request
+        
         $data = $request->validated();
-
-
         // Pass the data to the service for updating
         $this->userService->updateUser($id, $data);
 

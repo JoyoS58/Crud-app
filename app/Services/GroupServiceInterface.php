@@ -10,4 +10,6 @@ interface GroupServiceInterface
     public function updateGroup($id, array $data);
     public function deleteGroup($id);
     public function createGroupWithUsers(array $groupData, array $userIds);
+    public function updateGroupWithUsers($groupId, array $groupData, array $userIds);
+    public function getAllGroupUsers();
 }

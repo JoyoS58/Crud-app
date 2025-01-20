@@ -33,8 +33,8 @@
                         <label for="email" class="form-label font-weight-bold">Email</label>
                         <input type="email" name="email" id="email"
                             class="form-control @error('email') is-invalid @enderror"
-                            value="{{ old('email', $user->email) }}" required readonly>
-                        <input type="hidden" name="email" value="{{ old('email', $user->email) }}">
+                            value="{{ old('email', $user->email) }}" required>
+                        {{-- <input type="hidden" name="email" value="{{ old('email', $user->email) }}"> --}}
                         <!-- Pastikan email tetap dikirimkan -->
                         @error('email')
                             <div class="text-danger mt-2">{{ $message }}</div>

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Services;
 
 use App\Models\User;
@@ -28,26 +29,19 @@ class UserService implements UserServiceInterface
 
     public function createUser(array $data)
     {
-        if (!empty($data['password'])) {
-            $data['password'] = Hash::make($data['password']);
-        }
         return $this->userRepository->createUser($data);
     }
 
     public function updateUser($id, array $data)
-{
-    // Ambil user yang sedang diupdate
-    $user = $this->userRepository->getUserById($id);
+    {
+        if (isset($data['password']) && !empty($data['password'])) {
+            $data['password'] = Hash::make($data['password']);
+        } else {
+            unset($data['password']); 
+        }
 
-    // If there's a new password and it's not empty, hash it
-    if (isset($data['password']) && !empty($data['password'])) {
-        $data['password'] = Hash::make($data['password']);
-    } else {
-        unset($data['password']); // Remove password if empty
+        return $this->userRepository->updateUser($id, $data);
     }
-
-    return $this->userRepository->updateUser($id, $data);
-}
 
     public function deleteUser($id)
     {
@@ -62,17 +56,5 @@ class UserService implements UserServiceInterface
             throw new \Exception("One or more users not found.");
         }
     }
-
-    // Validasi untuk memastikan email unik
-    private function validateEmailUnique($email, $userId)
-    {
-        $existingUser = User::where('email', $email)->where('user_id', '!=', $userId)->first();
-        if ($existingUser) {
-            throw new ValidationException("Email is already taken.");
-        }
-    }
-    
-
-
 
 }

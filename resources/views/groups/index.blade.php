@@ -36,6 +36,7 @@
                                 <th>Name</th>
                                 <th>Description</th>
                                 <th>Status</th>
+                                <th>Users</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -49,6 +50,9 @@
                                         <span class="badge badge-{{ $group->is_active ? 'success' : 'danger' }}">
                                             {{ $group->is_active ? 'Active' : 'Inactive' }}
                                         </span>
+                                    </td>
+                                    <td>
+                                        {{ $group->users->count() }}
                                     </td>
                                     <td class="text-center">
                                         <!-- View Button -->

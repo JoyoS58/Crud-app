@@ -54,4 +54,25 @@ class GroupService implements GroupServiceInterface
             throw new \Exception('Failed to create group with users: ' . $e->getMessage());
         }
     }
+
+    public function updateGroupWithUsers($groupId, array $groupData, array $userIds)
+    {
+        try {
+            DB::transaction(function () use ($groupId, $groupData, $userIds) {
+                // Update group details
+                $group = $this->groupRepository->updateGroup($groupId, $groupData);
+
+                // Sync users in the group
+                $group->members()->sync($userIds);
+            });
+        } catch (\Exception $e) {
+            throw new \Exception('Failed to update group with users: ' . $e->getMessage());
+        }
+    }
+    public function getAllGroupUsers()
+    {
+        return $this->groupRepository->getAllGroupUsers();
+    }
+
+    
 }

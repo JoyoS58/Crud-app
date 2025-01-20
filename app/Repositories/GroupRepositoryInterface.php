@@ -9,4 +9,5 @@ interface GroupRepositoryInterface
     public function createGroup(array $data);
     public function updateGroup($id, array $data);
     public function deleteGroup($id);
+    public function getAllGroupUsers();
 }

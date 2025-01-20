@@ -24,7 +24,8 @@ class GroupController extends Controller
     public function index()
     {
         $groups = $this->groupService->getAllGroups();
-        return view('groups.index', compact('groups'));
+        $users = $this->groupService->getAllGroupUsers();
+        return view('groups.index', compact('groups', 'users'));
     }
 
     // Menampilkan form tambah group
@@ -36,19 +37,18 @@ class GroupController extends Controller
 
     // Menyimpan group baru
     public function store(StoreGroupRequest $request)
-{
-    try {
-        $validated = $request->validated();  
+    {
+        try {
+            $validated = $request->validated();
 
-        // Now, create the group with users
-        $this->groupService->createGroupWithUsers($validated, $request->input('user_ids'));
+            // Now, create the group with users
+            $this->groupService->createGroupWithUsers($validated, $request->input('user_ids'));
 
-        return redirect()->route('groups.index')->with('success', 'Group created successfully.');
-    } catch (\Exception $e) {
-        return redirect()->back()->withErrors(['error' => 'Failed to create group: ' . $e->getMessage()]);
+            return redirect()->route('groups.index')->with('success', 'Group created successfully.');
+        } catch (\Exception $e) {
+            return redirect()->back()->withErrors(['error' => 'Failed to create group: ' . $e->getMessage()]);
+        }
     }
-}
-
 
     // Menampilkan detail group
     public function show($id)
@@ -61,20 +61,30 @@ class GroupController extends Controller
     public function edit($id)
     {
         $group = $this->groupService->getGroupById($id);
-        return view('groups.edit', compact('group'));
+        $users = $this->userService->getAllUsers();
+
+        return view('groups.edit', compact('group', 'users'));
     }
+
 
     // Mengupdate group
     public function update(UpdateGroupRequest $request, $id)
     {
         try {
             $validated = $request->validated();
-            $this->groupService->updateGroup($id, $validated); // Using the validated data
+
+            // User IDs for group
+            $userIds = $request->input('user_ids', []);
+
+            // Update group and sync users
+            $this->groupService->updateGroupWithUsers($id, $validated, $userIds);
+
             return redirect()->route('groups.index')->with('success', 'Group updated successfully.');
         } catch (\Exception $e) {
             return redirect()->back()->withErrors(['error' => 'Failed to update group: ' . $e->getMessage()]);
         }
     }
+
 
     // Menghapus group
     public function destroy($id)
