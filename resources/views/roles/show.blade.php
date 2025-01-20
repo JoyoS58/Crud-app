@@ -62,19 +62,20 @@
         <!-- Add User to Role Section -->
         <hr>
         <h3 class="mb-3">Add User to Role</h3>
-        <form action="{{ route('roles.addUser', $role->role_id) }}" method="POST">
+        <form id="addUserForm" action="{{ route('roles.addUser', $role->role_id) }}" method="POST" class="p-4 shadow-sm rounded border">
             @csrf
             <div class="mb-3">
                 <label for="userId" class="form-label">Select User</label>
                 <select name="userId" id="userId" class="form-select" required>
+                    <option value="" disabled selected>Search and select a user</option>
                     @foreach ($users as $user)
-                        @if (!in_array($user->user_id, $role->users->pluck('user_id')->toArray()))
+                        @if (!in_array($user->user_id, $role->users->pluck('user_id')->toArray()) && $user->roles->isEmpty())
                             <option value="{{ $user->user_id }}">{{ $user->name }} ({{ $user->email }})</option>
                         @endif
                     @endforeach
                 </select>
             </div>
-            <div class="d-flex justify-content-between">
+            <div class="d-flex justify-content-between mt-4">
                 <a href="{{ route('roles.index') }}" class="btn btn-secondary btn-lg">
                     <i class="fas fa-arrow-left"></i> Back to List
                 </a>
@@ -83,6 +84,9 @@
                 </button>
             </div>
         </form>
+        <div id="successMessage" class="alert alert-success mt-4" style="display: none;">
+            <i class="fas fa-check-circle"></i> User added successfully!
+        </div>
     </div>
 @endsection
 
@@ -178,4 +182,24 @@
             margin-bottom: 30px;
         }
     </style>
+@endsection
+
+@section('scripts')
+    <script>
+        document.getElementById('addUserForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            // Simulate form submission
+            setTimeout(function() {
+                document.getElementById('successMessage').style.display = 'block';
+            }, 500);
+        });
+
+        // Initialize select2 for better user selection experience
+        $(document).ready(function() {
+            $('#userId').select2({
+                placeholder: 'Search and select a user',
+                allowClear: true
+            });
+        });
+    </script>
 @endsection

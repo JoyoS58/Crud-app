@@ -73,6 +73,8 @@ class GroupService implements GroupServiceInterface
     {
         return $this->groupRepository->getAllGroupUsers();
     }
-
-    
+    public function groupNameExists($groupName)
+    {
+        return $this->groupRepository->groupExists($groupName);
+    }
 }

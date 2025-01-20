@@ -54,4 +54,8 @@ class GroupRepository implements GroupRepositoryInterface
     {
         return GroupUser::all();
     }
+    public function groupExists($groupName)
+    {
+        return Group::where('group_name', $groupName)->exists();
+    }
 }

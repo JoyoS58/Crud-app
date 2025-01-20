@@ -31,13 +31,20 @@ class UserService implements UserServiceInterface
     {
         return $this->userRepository->createUser($data);
     }
-
     public function updateUser($id, array $data)
     {
-        if (isset($data['password']) && !empty($data['password'])) {
+        $user = $this->userRepository->getUserById($id);
+
+        // Validasi current password jika password baru diisi
+        if (!empty($data['password'])) {
+            if (!Hash::check($data['current_password'], $user->password)) {
+                throw new \Exception('Current password is incorrect.');
+            }
+
+            // Hash password baru
             $data['password'] = Hash::make($data['password']);
         } else {
-            unset($data['password']); 
+            unset($data['password']); // Jangan update password jika kosong
         }
 
         return $this->userRepository->updateUser($id, $data);

@@ -39,13 +39,20 @@ class GroupController extends Controller
     public function store(StoreGroupRequest $request)
     {
         try {
+            // Validate the input data
             $validated = $request->validated();
-
-            // Now, create the group with users
+    
+            // Check if the group name already exists (if needed)
+            if ($this->groupService->groupNameExists($validated['group_name'])) {
+                return redirect()->back()->with('group_exists', true);
+            }
+    
+            // Create the group with users
             $this->groupService->createGroupWithUsers($validated, $request->input('user_ids'));
-
+    
             return redirect()->route('groups.index')->with('success', 'Group created successfully.');
         } catch (\Exception $e) {
+            // Return error if something went wrong
             return redirect()->back()->withErrors(['error' => 'Failed to create group: ' . $e->getMessage()]);
         }
     }

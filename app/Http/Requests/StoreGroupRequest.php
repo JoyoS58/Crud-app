@@ -15,7 +15,7 @@ class StoreGroupRequest extends FormRequest
     public function rules()
     {
         return [
-            'group_name' => 'required|string|max:255',
+            'group_name' => 'required|string|max:255|unique:groups,group_name',
             'group_description' => 'nullable|string',
             'is_active' => 'nullable|boolean',
             'user_ids' => 'required|array',

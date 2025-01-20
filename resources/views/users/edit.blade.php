@@ -7,7 +7,7 @@
             <h1 class="display-5 font-weight-bold text-primary">
                 <i class="fas fa-edit"></i> Edit User: {{ $user->name }}
             </h1>
-            <p class="lead text-muted">Update the user details below.</p>
+            <p class="lead text-muted">Update the user details below. Leave password fields empty to keep the current password.</p>
         </div>
 
         <!-- Edit User Form -->
@@ -21,8 +21,8 @@
                     <div class="mb-4">
                         <label for="name" class="form-label font-weight-bold">Name</label>
                         <input type="text" name="name" id="name"
-                            class="form-control @error('name') is-invalid @enderror" value="{{ old('name', $user->name) }}"
-                            required>
+                            class="form-control @error('name') is-invalid @enderror" 
+                            value="{{ old('name', $user->name) }}" required>
                         @error('name')
                             <div class="text-danger mt-2">{{ $message }}</div>
                         @enderror
@@ -34,17 +34,25 @@
                         <input type="email" name="email" id="email"
                             class="form-control @error('email') is-invalid @enderror"
                             value="{{ old('email', $user->email) }}" required>
-                        {{-- <input type="hidden" name="email" value="{{ old('email', $user->email) }}"> --}}
-                        <!-- Pastikan email tetap dikirimkan -->
                         @error('email')
                             <div class="text-danger mt-2">{{ $message }}</div>
                         @enderror
                     </div>
 
-
-                    <!-- Password Field -->
+                    <!-- Current Password Field -->
                     <div class="mb-4">
-                        <label for="password" class="form-label font-weight-bold">Password</label>
+                        <label for="current_password" class="form-label font-weight-bold">Current Password</label>
+                        <input type="password" name="current_password" id="current_password"
+                            class="form-control @error('current_password') is-invalid @enderror">
+                        @error('current_password')
+                            <div class="text-danger mt-2">{{ $message }}</div>
+                        @enderror
+                        <small class="form-text text-muted">Required if changing the password.</small>
+                    </div>
+
+                    <!-- New Password Field -->
+                    <div class="mb-4">
+                        <label for="password" class="form-label font-weight-bold">New Password</label>
                         <input type="password" name="password" id="password"
                             class="form-control @error('password') is-invalid @enderror">
                         @error('password')
@@ -53,10 +61,14 @@
                         <small class="form-text text-muted">Leave blank to keep the current password.</small>
                     </div>
 
-                    <!-- Confirm Password Field -->
+                    <!-- Confirm New Password Field -->
                     <div class="mb-4">
-                        <label for="password_confirmation" class="form-label font-weight-bold">Confirm Password</label>
-                        <input type="password" name="password_confirmation" id="password_confirmation" class="form-control">
+                        <label for="password_confirmation" class="form-label font-weight-bold">Confirm New Password</label>
+                        <input type="password" name="password_confirmation" id="password_confirmation" 
+                            class="form-control">
+                        @error('password_confirmation')
+                            <div class="text-danger mt-2">{{ $message }}</div>
+                        @enderror
                     </div>
 
                     <!-- Buttons -->
@@ -117,11 +129,6 @@
         }
 
         /* Error messages */
-        .invalid-feedback {
-            font-size: 0.9rem;
-            color: #dc3545;
-        }
-
         .text-danger {
             font-size: 0.9rem;
         }
@@ -129,30 +136,6 @@
         /* Spacing between fields */
         .mb-4 {
             margin-bottom: 1.5rem;
-        }
-
-        /* Adjust spacing for submit button */
-        .btn-primary,
-        .btn-secondary {
-            font-size: 1rem;
-            font-weight: 600;
-            padding: 12px 30px;
-        }
-
-        /* Align form inputs and buttons for symmetry */
-        .form-select,
-        .form-control {
-            width: 100%;
-            max-width: 500px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        /* Align form container */
-        .card-body {
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
         }
     </style>
 @endsection

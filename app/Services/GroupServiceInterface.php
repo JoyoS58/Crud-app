@@ -12,4 +12,5 @@ interface GroupServiceInterface
     public function createGroupWithUsers(array $groupData, array $userIds);
     public function updateGroupWithUsers($groupId, array $groupData, array $userIds);
     public function getAllGroupUsers();
+    public function groupNameExists($groupName);
 }

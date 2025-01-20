@@ -13,7 +13,7 @@ return new class extends Migration
             $table->string('group_name')->unique();
             $table->text('group_description')->nullable();
             $table->boolean('is_active')->default(true);
-            $table->foreignId('user_id')->nullable()->constrained('users', 'user_id')->onDelete('cascade');
+            $table->foreignId('user_id')->nullable()->constrained()->references('user_id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
     }

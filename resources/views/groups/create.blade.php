@@ -13,7 +13,7 @@
         <!-- Group Creation Form -->
         <div class="card shadow-sm">
             <div class="card-body">
-                <form action="{{ route('groups.store') }}" method="POST">
+                <form action="{{ route('groups.store') }}" method="POST" id="createGroupForm">
                     @csrf
 
                     <!-- Group Name -->
@@ -98,27 +98,27 @@
     </div>
 @endsection
 
-@section('styles')
-    <style>
-        /* Form and Card Styling */
-        .form-control,
-        .form-select {
-            border-radius: 8px;
-        }
+@section('scripts')
+    <!-- SweetAlert CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-        .form-control:focus,
-        .form-select:focus {
-            box-shadow: 0 0 5px rgba(0, 123, 255, 0.8);
-            border-color: #007bff;
-        }
+    <script>
+        @if($errors->any())
+            Swal.fire({
+                icon: 'error',
+                title: 'Validation Error',
+                text: '{{ $errors->first() }}',
+                confirmButtonText: 'Close'
+            });
+        @endif
 
-        .card {
-            border-radius: 12px;
-            border: 1px solid #007bff;
-        }
-
-        .card-body {
-            padding: 2rem;
-        }
-    </style>
+        @if(session('group_exists'))
+            Swal.fire({
+                icon: 'warning',
+                title: 'Group Name Already Exists',
+                text: 'The group name you have entered is already taken. Please choose a different name.',
+                confirmButtonText: 'Try Again'
+            });
+        @endif
+    </script>
 @endsection

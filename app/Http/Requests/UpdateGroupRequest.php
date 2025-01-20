@@ -23,7 +23,7 @@ class UpdateGroupRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'group_name' => 'required|string|max:255',
+            'group_name' => 'required|string|max:255|unique:groups,group_name',
             'group_description' => 'nullable|string',
             'is_active' => 'nullable|boolean',
             'user_ids' => 'nullable|array',

@@ -46,17 +46,6 @@ class AuthController extends Controller
     // Proses registrasi
     public function register(StoreUserRequest $request)
     {
-        // $request->validate([
-        //     'name' => 'required|string|max:255',
-        //     'email' => 'required|email|unique:users,email',
-        //     'password' => 'required|min:6|confirmed',
-        // ]);
-
-        // User::create([
-        //     'name' => $request->name,
-        //     'email' => $request->email,
-        //     'password' => Hash::make($request->password),
-        // ]);
 
         $data = $request->validated();
         $this->userService->createUser($data);

@@ -49,12 +49,14 @@ class UserController extends Controller
     // Memperbarui data pengguna
     public function update(UpdateUserRequest $request, $id)
     {
-        
         $data = $request->validated();
-        // Pass the data to the service for updating
-        $this->userService->updateUser($id, $data);
 
-        return redirect()->route('users.index')->with('status', 'User updated successfully.');
+        try {
+            $this->userService->updateUser($id, $data);
+            return redirect()->route('users.index')->with('status', 'User updated successfully.');
+        } catch (\Exception $e) {
+            return redirect()->back()->withErrors(['current_password' => $e->getMessage()]);
+        }
     }
 
 
