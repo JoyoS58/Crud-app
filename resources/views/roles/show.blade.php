@@ -62,14 +62,15 @@
         <!-- Add User to Role Section -->
         <hr>
         <h3 class="mb-3">Add User to Role</h3>
-        <form id="addUserForm" action="{{ route('roles.addUser', $role->role_id) }}" method="POST" class="p-4 shadow-sm rounded border">
+        <form id="addUserForm" action="{{ route('roles.addUser', $role->role_id) }}" method="POST"
+            class="p-4 shadow-sm rounded border">
             @csrf
             <div class="mb-3">
                 <label for="userId" class="form-label">Select User</label>
                 <select name="userId" id="userId" class="form-select" required>
                     <option value="" disabled selected>Search and select a user</option>
                     @foreach ($users as $user)
-                        @if (!in_array($user->user_id, $role->users->pluck('user_id')->toArray()) && $user->roles->isEmpty())
+                        @if (!in_array($user->user_id, $role->users->pluck('user_id')->toArray()))
                             <option value="{{ $user->user_id }}">{{ $user->name }} ({{ $user->email }})</option>
                         @endif
                     @endforeach

@@ -13,9 +13,9 @@ class MemberService implements MemberServiceInterface
         $this->memberRepository = $memberRepository;
     }
 
-    public function getAllMembers()
+    public function getAllMembers($perPage = 10)
     {
-        return $this->memberRepository->getAllMembers();
+        return $this->memberRepository->getAllMembers($perPage);
     }
 
     public function getMemberById($id)

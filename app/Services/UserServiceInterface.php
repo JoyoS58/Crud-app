@@ -10,4 +10,5 @@ interface UserServiceInterface
     public function updateUser($id, array $data);
     public function deleteUser($id);
     public function validateUsers(array $userIds);
+    public function countUsers();
 }

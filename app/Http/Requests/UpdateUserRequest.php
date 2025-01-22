@@ -17,6 +17,7 @@ class UpdateUserRequest extends FormRequest
         $userId = $this->route('user'); 
         // dd($userId);
         return [
+            'role_id' => 'nullable|integer|exists:roles,role_id',
             'name' => 'required|string|max:255',
             'email' => [
                 'required',
@@ -26,6 +27,7 @@ class UpdateUserRequest extends FormRequest
             ],
             'current_password' => 'required_with:password|string', 
             'password' => 'nullable|string|min:8|confirmed', 
+            'profile' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ];
     }
     public function messages()

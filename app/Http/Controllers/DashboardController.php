@@ -18,6 +18,15 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        return view('dashboard');
+        // return view('dashboard.admin');
+    $user = auth()->user();
+
+    if ($user->role_id == '1') {
+        return view('dashboard.admin');
+    } elseif ($user->role_id == '2') {
+        return view('dashboard.member');
+    } else {
+        return view('dashboard.user');
+    }
     }
 }

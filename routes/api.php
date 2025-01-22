@@ -1,54 +1,55 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "api" middleware group. Make something great!
-|
-*/
-
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\GroupController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\ActivityController;
+use App\Http\Controllers\HomeController;
 
-// Route::get('users', [UserController::class, 'index']);
-// Route::post('users', [UserController::class, 'store']);
-// Route::put('users/{id}', [UserController::class, 'update']);
-// Route::delete('users/{id}', [UserController::class, 'destroy']);
-
-// Route::get('roles', [RoleController::class, 'index']);
-// Route::post('roles', [RoleController::class, 'store']);
-// Route::put('roles/{id}', [RoleController::class, 'update']);
-// Route::delete('roles/{id}', [RoleController::class, 'destroy']);
-
-// Route::get('groups', [GroupController::class, 'index']);
-// Route::post('groups', [GroupController::class, 'store']);
-// Route::put('groups/{id}', [GroupController::class, 'update']);
-// Route::delete('groups/{id}', [GroupController::class, 'destroy']);
-
-// Route::get('members', [MemberController::class, 'index']);
-// Route::post('members', [MemberController::class, 'store']);
-// Route::put('members/{id}', [MemberController::class, 'update']);
-// Route::delete('members/{id}', [MemberController::class, 'destroy']);
-
-// Route::get('activities', [ActivityController::class, 'index']);
-// Route::post('activities', [ActivityController::class, 'store']);
-// Route::put('activities/{id}', [ActivityController::class, 'update']);
-// Route::delete('activities/{id}', [ActivityController::class, 'destroy']);
+// /*
+// |---------------------------------------------------------------------- 
+// | Web Routes 
+// |---------------------------------------------------------------------- 
+// | 
+// | Definisikan semua rute aplikasi Anda di sini. 
+// | 
+// */
 
 
-// Route::apiResource('users', UserController::class);
-// Route::apiResource('roles', RoleController::class);
-// Route::apiResource('groups', GroupController::class);
-// Route::apiResource('members', MemberController::class);
-// Route::apiResource('activities', ActivityController::class);
+Route::get('/home', [HomeController::class, 'index']);
+// Halaman login dan register
+Route::middleware('guest')->group(function () {
+    Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+    Route::post('/login', [AuthController::class, 'login']);
+    Route::get('/register', [AuthController::class, 'showRegistrationForm'])->name('register');
+    Route::post('/register', [AuthController::class, 'register']);
+});
 
+// Rute logout
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
+
+// Halaman dashboard (hanya untuk pengguna yang sudah login)
+Route::middleware('auth')->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+    // Rute untuk manajemen pengguna
+    Route::apiResource('users', UserController::class);
+
+    // Rute untuk manajemen roles
+    Route::apiResource('roles', RoleController::class);
+    Route::post('roles/{role}/add-user', [RoleController::class, 'addUserToRole'])->name('roles.addUser');
+    Route::post('roles/{role}/remove-user', [RoleController::class, 'removeUserFromRole'])->name('roles.removeUser');
+
+    // Rute untuk manajemen grup
+    Route::apiResource('groups', GroupController::class);
+
+    // Rute untuk manajemen member
+    Route::apiResource('members', MemberController::class);
+
+    // Rute untuk manajemen activities
+    Route::api('activities', ActivityController::class);
+});

@@ -63,6 +63,22 @@
                             required>
                     </div>
 
+                    <!-- Role ID -->
+                    <div class="form-group">
+                        <label for="role_id" class="font-weight-bold">Role</label>
+                        <select name="role_id" id="role_id" class="form-control @error('role_id') is-invalid @enderror" required>
+                            <option value="" hidden>Select Role</option>
+                            @foreach($roles as $role)
+                                <option value="{{ $role->role_id }}" {{ old('role_id') == $role->role_id ? 'selected' : '' }}>{{ $role->role_name }}</option>
+                            @endforeach
+                        </select>
+                        @error('role_id')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
+                    </div>
+
                     <!-- Form Buttons -->
                     <div class="d-flex justify-content-between mt-4">
                         <a href="{{ route('users.index') }}" class="btn btn-secondary">
@@ -79,37 +95,9 @@
 @endsection
 
 @section('styles')
-    <style>
-        /* Styling for form elements */
-        .form-control,
-        .form-select {
-            border-radius: 8px;
-        }
+    <link rel="stylesheet" href="{{ asset('css/user-styles.css') }}">
+@endsection
 
-        .form-control:focus,
-        .form-select:focus {
-            box-shadow: 0 0 5px rgba(0, 123, 255, 0.8);
-            border-color: #007bff;
-        }
-
-        /* Card design */
-        .card {
-            border: 1px solid #007bff;
-            border-radius: 12px;
-        }
-
-        .card-body {
-            padding: 2rem;
-        }
-
-        /* Page Title */
-        .display-5 {
-            font-size: 2.5rem;
-        }
-
-        /* Success/Error messages */
-        .invalid-feedback {
-            font-size: 0.9rem;
-        }
-    </style>
+@section('scripts')
+    <script src="{{ asset('js/user-script.js') }}"></script>
 @endsection

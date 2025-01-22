@@ -82,6 +82,19 @@
                     </div>
                 </div>
             </div>
+            <!-- Role ID -->
+            <div class="form-group" style="display: none;">
+                <label for="role_id" class="font-weight-bold">Role</label>
+                <select name="role_id" id="role_id" class="form-control @error('role_id') is-invalid @enderror" required>
+                    <option input="hidden" value="3" selected>Default Role</option>
+                    <!-- Add other roles as needed -->
+                </select>
+                @error('role_id')
+                    <span class="invalid-feedback" role="alert">
+                        <strong>{{ $message }}</strong>
+                    </span>
+                @enderror
+            </div>
             <!-- Submit Button -->
             <button type="submit" class="btn btn-primary btn-lg w-100">Register</button>
         </form>

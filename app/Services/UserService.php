@@ -17,9 +17,9 @@ class UserService implements UserServiceInterface
         $this->userRepository = $userRepository;
     }
 
-    public function getAllUsers()
+    public function getAllUsers($perPage = 5, $search = null)
     {
-        return $this->userRepository->getAllUsers();
+        return $this->userRepository->getAllUsers($perPage, $search);
     }
 
     public function getUserById($id)
@@ -63,5 +63,7 @@ class UserService implements UserServiceInterface
             throw new \Exception("One or more users not found.");
         }
     }
-
+    public function countUsers(){
+        return $this->userRepository->countUsers();
+    }
 }

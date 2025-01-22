@@ -26,6 +26,11 @@ use App\Services\MemberService;
 use App\Services\ActivityServiceInterface;
 use App\Services\ActivityService;
 use App\Services\AuthService;
+use App\Services\Contracts\FileUploadServiceInterface;
+use App\Services\FileUploadService;
+use Illuminate\Contracts\Pagination\Paginator;
+
+// use App\Services\FileUploadServiceInterface;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -50,6 +55,8 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(AuthService::class, function ($app) {
             return new AuthService($app->make(AuthRepositoryInterface::class));
         });
+        
+        $this->app->bind(FileUploadServiceInterface::class, FileUploadService::class);
     }
 
     /**
@@ -57,7 +64,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        \Illuminate\Pagination\Paginator::defaultView('pagination::default');
+
     }
 }
 

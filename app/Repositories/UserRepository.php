@@ -6,9 +6,18 @@ use App\Models\User;
 
 class UserRepository implements UserRepositoryInterface
 {
-    public function getAllUsers()
+    public function getAllUsers($perPage = 5, $search = null)
     {
-        return User::all();
+        $query = User::query();
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', '%' . $search . '%')
+                    ->orWhere('email', 'like', '%' . $search . '%');
+            });
+        }
+
+        return $query->paginate($perPage);
     }
 
     public function getUserById($id)
@@ -31,5 +40,9 @@ class UserRepository implements UserRepositoryInterface
     {
         $user = $this->getUserById($id);
         $user->delete();
+    }
+    public function countUsers()
+    {
+        return User::count();
     }
 }

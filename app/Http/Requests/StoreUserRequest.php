@@ -13,7 +13,9 @@ class StoreUserRequest extends FormRequest
 
     public function rules()
     {
+        // dd($_REQUEST);
         return [
+            'role_id' => 'required|integer',
             'name' => 'required|string',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:8|confirmed',

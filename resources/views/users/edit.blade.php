@@ -13,7 +13,7 @@
         <!-- Edit User Form -->
         <div class="card shadow-sm rounded-lg">
             <div class="card-body">
-                <form action="{{ route('users.update', $user->user_id) }}" method="POST">
+                <form action="{{ route('users.update', $user->user_id) }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
 
@@ -39,6 +39,16 @@
                         @enderror
                     </div>
 
+                    <!-- Profile Picture Field -->
+                    <div class="mb-4">
+                        <label for="profile" class="form-label font-weight-bold">Profile Picture</label>
+                        <input type="file" name="profile" id="profile"
+                            class="form-control @error('profile') is-invalid @enderror">
+                        @error('profile')
+                            <div class="text-danger mt-2">{{ $message }}</div>
+                        @enderror
+                    </div>
+
                     <!-- Current Password Field -->
                     <div class="mb-4">
                         <label for="current_password" class="form-label font-weight-bold">Current Password</label>
@@ -47,7 +57,7 @@
                         @error('current_password')
                             <div class="text-danger mt-2">{{ $message }}</div>
                         @enderror
-                        <small class="form-text text-muted">Required if changing the password.</small>
+                        <small class="form-text text-muted">Required if changing data.</small>
                     </div>
 
                     <!-- New Password Field -->
@@ -87,55 +97,5 @@
 @endsection
 
 @section('styles')
-    <style>
-        /* Form and Card Styling */
-        .form-control,
-        .form-select {
-            border-radius: 8px;
-            font-size: 1rem;
-            padding: 12px 16px;
-        }
-
-        .form-control:focus,
-        .form-select:focus {
-            box-shadow: 0 0 5px rgba(0, 123, 255, 0.8);
-            border-color: #007bff;
-        }
-
-        .card {
-            border-radius: 12px;
-            border: 1px solid #007bff;
-        }
-
-        .card-body {
-            padding: 2rem;
-        }
-
-        /* Title and form heading */
-        .display-4 {
-            font-size: 2.5rem;
-        }
-
-        .form-label {
-            font-size: 1.1rem;
-            font-weight: bold;
-        }
-
-        /* Buttons */
-        .btn {
-            font-size: 1rem;
-            font-weight: 600;
-            padding: 12px 24px;
-        }
-
-        /* Error messages */
-        .text-danger {
-            font-size: 0.9rem;
-        }
-
-        /* Spacing between fields */
-        .mb-4 {
-            margin-bottom: 1.5rem;
-        }
-    </style>
+<link rel="stylesheet" href="{{ asset('css/user-styles.css') }}">
 @endsection

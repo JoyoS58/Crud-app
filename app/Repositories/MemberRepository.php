@@ -6,9 +6,9 @@ use App\Models\Member;
 
 class MemberRepository implements MemberRepositoryInterface
 {
-    public function getAllMembers()
+    public function getAllMembers($perPage = 10)
     {
-        return Member::all();
+        return Member::paginate($perPage);
     }
 
     public function getMemberById($id)

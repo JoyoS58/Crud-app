@@ -44,62 +44,15 @@
             </div>
         </div>
 
-        <!-- Back Button -->
-        <div class="mt-4">
+        <!-- Back and Show Profile Buttons -->
+        <div class="mt-4 d-flex justify-content-between">
             <a href="{{ route('users.index') }}" class="btn btn-secondary btn-lg">
-                <i class="fas fa-arrow-left"></i> Back to Users List
+            <i class="fas fa-arrow-left"></i> Back to Users List
             </a>
         </div>
-    </div>
-@endsection
+        </div>
+    @endsection
 
-@section('styles')
-    <style>
-        .text-center h1 {
-            font-size: 2.5rem;
-            font-weight: 600;
-            letter-spacing: 1px;
-            text-shadow: 2px 2px 4px rgba(0, 123, 255, 0.3);
-        }
-
-        .card {
-            border-radius: 12px;
-            border: none;
-        }
-
-        .card-body {
-            padding: 2rem;
-        }
-
-        /* List Group Item Styling */
-        .list-group-item {
-            padding: 1rem;
-            font-size: 1rem;
-        }
-
-        .list-group-item strong {
-            font-weight: bold;
-        }
-
-        .btn-secondary {
-            background-color: #6c757d;
-            border: none;
-        }
-
-        .btn-secondary:hover {
-            background-color: #5a6268;
-        }
-
-        .mt-4,
-        .mb-3 {
-            margin-top: 1.5rem;
-            margin-bottom: 1.5rem;
-        }
-
-        /* Card Title Styling */
-        .card-body h3 {
-            font-size: 1.75rem;
-            font-weight: 600;
-        }
-    </style>
-@endsection
+    @section('styles')
+    <link rel="stylesheet" href="{{ asset('css/user-styles.css') }}">
+    @endsection

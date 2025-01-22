@@ -44,8 +44,9 @@ class RoleController extends Controller
     // Menampilkan detail role
     public function show($id)
     {
+        $count = $this->userService->countUsers();
         $role = $this->roleService->getRoleById($id);
-        $users = $this->userService->getAllUsers();
+        $users = $this->userService->getAllUsers($count);
         return view('roles.show', compact('role', 'users'));
     }
 

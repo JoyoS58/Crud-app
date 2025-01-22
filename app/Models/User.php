@@ -17,7 +17,7 @@ class User extends Authenticatable
     public $timestamps = true;
 
     // Mass assignable columns
-    protected $fillable = ['name', 'email', 'password'];
+    protected $fillable = ['role_id','name', 'email', 'password', 'profile'];
 
     // Set the data types for attributes
     protected $casts = [

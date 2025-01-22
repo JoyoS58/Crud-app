@@ -1,4 +1,4 @@
-{{-- @extends('layouts.app')
+@extends('layouts.app')
 
 @section('content')
     <div class="card p-4 shadow-lg border-1">
@@ -158,4 +158,4 @@
             background-color: #218838;
         }
     </style>
-@endsection --}}
+@endsection

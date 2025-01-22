@@ -83,6 +83,38 @@
                         @enderror
                     </div>
 
+                    <!-- Pagination Links -->
+                    <div class="d-flex justify-content-between align-items-center mt-4">
+                        <form method="GET" action="{{ route('groups.create') }}">
+                            <label for="pageSize">Show</label>
+                            <select id="pageSize" name="pageSize" onchange="this.form.submit()">
+                                <option value="5" {{ request('pageSize') == 5 ? 'selected' : '' }}>5</option>
+                                <option value="10" {{ request('pageSize') == 10 ? 'selected' : '' }}>10</option>
+                                <option value="20" {{ request('pageSize') == 20 ? 'selected' : '' }}>20</option>
+                                <option value="50" {{ request('pageSize') == 50 ? 'selected' : '' }}>50</option>
+                            </select>
+                            <label for="pageSize">entries</label>
+                        </form>
+                        <nav aria-label="Page navigation example">
+                            <ul class="pagination">
+                                <li class="page-item {{ $users->currentPage() == 1 ? ' disabled' : '' }}">
+                                    <a class="page-link"
+                                        href="{{ $users->appends(['pageSize' => request('pageSize')])->previousPageUrl() }}">Previous</a>
+                                </li>
+                                @for ($i = 1; $i <= $users->lastPage(); $i++)
+                                    <li class="page-item {{ $users->currentPage() == $i ? ' active' : '' }}">
+                                        <a class="page-link"
+                                            href="{{ $users->appends(['pageSize' => request('pageSize')])->url($i) }}">{{ $i }}</a>
+                                    </li>
+                                @endfor
+                                <li
+                                    class="page-item {{ $users->currentPage() == $users->lastPage() ? ' disabled' : '' }}">
+                                    <a class="page-link"
+                                        href="{{ $users->appends(['pageSize' => request('pageSize')])->nextPageUrl() }}">Next</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
                     <!-- Submit Button -->
                     <div class="d-flex justify-content-between mt-4">
                         <a href="{{ route('groups.index') }}" class="btn btn-secondary">
@@ -103,7 +135,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
-        @if($errors->any())
+        @if ($errors->any())
             Swal.fire({
                 icon: 'error',
                 title: 'Validation Error',
@@ -112,7 +144,7 @@
             });
         @endif
 
-        @if(session('group_exists'))
+        @if (session('group_exists'))
             Swal.fire({
                 icon: 'warning',
                 title: 'Group Name Already Exists',
