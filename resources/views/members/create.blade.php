@@ -18,31 +18,28 @@
 
                     <!-- User Selection -->
                     <div class="mb-4">
-                        <label for="userId" class="form-label font-weight-bold">User</label>
-                        <select class="form-select @error('user_id') is-invalid @enderror" id="user_id" name="user_id" required
-                            >
+                        <label for="user_id" class="form-label font-weight-bold">User</label>
+                        <select class="form-select @error('user_id') is-invalid @enderror" id="user_id" name="user_id" required>
                             <option value="" disabled selected>Select a user</option>
                             @foreach ($users as $user)
-                                <option value="{{ $user->user_id }}">
+                                <option value="{{ $user->id }}" {{ old('user_id') == $user->id ? 'selected' : '' }}>
                                     {{ $user->name }} ({{ $user->email }})
                                 </option>
                             @endforeach
                         </select>
-                        @error('userId')
+                        @error('user_id')
                             <div class="text-danger mt-2">{{ $message }}</div>
                         @enderror
                     </div>
 
                     <!-- Group Selection -->
                     <div class="mb-4">
-                        <label for="groupId" class="form-label font-weight-bold">Group</label>
+                        <label for="group_id" class="form-label font-weight-bold">Group</label>
                         <select class="form-select @error('group_id') is-invalid @enderror" id="group_id" name="group_id" required>
                             <option value="" disabled selected>Select a group</option>
-                            @foreach ($groups as $group)
-                                <option value="{{ $group->group_id }}">{{ $group->group_name }}</option>
-                            @endforeach
+                            <!-- Options will be loaded via AJAX -->
                         </select>
-                        @error('groupId')
+                        @error('group_id')
                             <div class="text-danger mt-2">{{ $message }}</div>
                         @enderror
                     </div>
@@ -180,4 +177,39 @@
             margin-right: auto;
         }
     </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#user_id').change(function() {
+                const userId = $(this).val();
+                const groupSelect = $('#group_id');
+
+                if (userId) {
+                    $.ajax({
+                        url: "{{ route('groups.byUser') }}",
+                        type: 'GET',
+                        data: {
+                            user_id: userId
+                        },
+                        success: function(response) {
+                            groupSelect.empty(); // Clear group options
+                            groupSelect.append('<option value="" disabled selected>Select a group</option>');
+
+                            if (response.length > 0) {
+                                response.forEach(group => {
+                                    groupSelect.append(`<option value="${group.group_id}">${group.group_name}</option>`);
+                                });
+                                groupSelect.prop('disabled', false); // Enable group dropdown
+                            } else {
+                                groupSelect.prop('disabled', true); // Keep disabled if no groups
+                            }
+                        },
+                    });
+                } else {
+                    groupSelect.empty(); // Clear group options if no user selected
+                    groupSelect.append('<option value="" disabled selected>Select a group</option>');
+                }
+            });
+        });
+    </script>
 @endsection

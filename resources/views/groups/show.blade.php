@@ -6,7 +6,7 @@
         <div class="text-center mb-4">
             <h1 class="display-4 font-weight-bold text-primary">{{ $group->group_name }}</h1>
             <p class="text-muted">{{ $group->group_description ?? 'No description provided.' }}</p>
-            <hr class="my-4" style="border-top: 3px solid #007bff; width: 60%;">
+            <hr class="my-2" style="border-top: 3px solid #007bff; width: 60%;">
         </div>
 
         <!-- Group Status -->
@@ -21,21 +21,23 @@
 
         <!-- Users in this Group -->
         <h3 class="mb-3 text-center">Users in this Group</h3>
-        @if ($group->users && $group->users->isEmpty())
-            <p class="text-center">No users are currently in this group.</p>
-        @elseif ($group->users)
-            <ul class="list-group">
-                @foreach ($group->users as $user)
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        <div>
-                            <strong>{{ $user->name }}</strong> <small>({{ $user->email }})</small>
-                        </div>
-                    </li>
-                @endforeach
-            </ul>
-        @else
-            <p class="text-center text-danger">Unable to fetch users for this group.</p>
-        @endif
+        <div class="mb-4 text-center" style="max-height: 300px; overflow-y: auto;">
+            @if ($group->users && $group->users->isEmpty())
+                <p class="text-center">No users are currently in this group.</p>
+            @elseif ($group->users)
+                <ul class="list-group">
+                    @foreach ($group->users as $user)
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong>{{ $user->name }}</strong> <small>({{ $user->email }})</small>
+                            </div>
+                        </li>
+                    @endforeach
+                </ul>
+            @else
+                <p class="text-center text-danger">Unable to fetch users for this group.</p>
+            @endif
+        </div>
 
         <!-- Back to Groups List Button -->
         <div class="mt-4 text-center">

@@ -60,19 +60,55 @@
                     <!-- Assign Users -->
                     <div class="mb-3">
                         <label for="user_ids" class="form-label font-weight-bold">Assign Users</label>
-                        <div id="user_ids" class="@error('user_ids') is-invalid @enderror">
-                            @foreach ($users as $user)
-                                <div class="form-check">
-                                    <input type="checkbox" name="user_ids[]" id="user_{{ $user->user_id }}"
-                                        value="{{ $user->user_id }}" class="form-check-input"
-                                        {{ in_array($user->user_id, old('user_ids', [])) ? 'checked' : '' }}>
-                                    <label for="user_{{ $user->user_id }}" class="form-check-label">
-                                        {{ $user->name }} ({{ $user->email }})
-                                    </label>
+                        <div class="row">
+                            <div class="col-md-6 text-center">
+                                <label class="form-label font-weight-bold">Available Users</label>
+                                <div id="available_users" class="border p-2 @error('user_ids') is-invalid @enderror" style="max-height: 300px; overflow-y: auto;">
+                                    @foreach ($users as $user)
+                                        @if ($user->role_id != 1 && !in_array($user->user_id, old('user_ids', [])))
+                                            <div class="btn-group-toggle w-100 mb-2" data-toggle="buttons">
+                                                <label class="btn btn-outline-primary w-100">
+                                                    <input type="checkbox" name="user_ids[]" id="user_{{ $user->user_id }}"
+                                                        value="{{ $user->user_id }}" onchange="toggleUserSelection(this)">
+                                                    {{ $user->name }} ({{ $user->email }})
+                                                </label>
+                                            </div>
+                                        @endif
+                                    @endforeach
                                 </div>
-                            @endforeach
+                            </div>
+                            <div class="col-md-6  text-center">
+                                <label class="form-label font-weight-bold">Selected Users</label>
+                                <div id="selected_users" class="border p-2 @error('user_ids') is-invalid @enderror" style="max-height: 300px; overflow-y: auto;">
+                                    @foreach ($users as $user)
+                                        @if ($user->role_id != 1 && in_array($user->user_id, old('user_ids', [])))
+                                            <div class="btn-group-toggle w-100 mb-2" data-toggle="buttons">
+                                                <label class="btn btn-outline-primary w-100">
+                                                    <input type="checkbox" name="user_ids[]" id="user_{{ $user->user_id }}"
+                                                        value="{{ $user->user_id }}" checked
+                                                        onchange="toggleUserSelection(this)">
+                                                    {{ $user->name }} ({{ $user->email }})
+                                                </label>
+                                            </div>
+                                        @endif
+                                    @endforeach
+                                </div>
+                            </div>
                         </div>
 
+                        <script>
+                            function toggleUserSelection(checkbox) {
+                                const availableUsers = document.getElementById('available_users');
+                                const selectedUsers = document.getElementById('selected_users');
+                                const parent = checkbox.closest('.btn-group-toggle');
+
+                                if (checkbox.checked) {
+                                    selectedUsers.appendChild(parent);
+                                } else {
+                                    availableUsers.appendChild(parent);
+                                }
+                            }
+                        </script>
                         <small class="form-text text-muted">
                             Select the users to assign.
                         </small>
@@ -82,39 +118,6 @@
                             </span>
                         @enderror
                     </div>
-
-                    {{-- <!-- Pagination Links -->
-                    <div class="d-flex justify-content-between align-items-center mt-4">
-                        <form method="GET" action="{{ route('groups.create') }}">
-                            <label for="pageSize">Show</label>
-                            <select id="pageSize" name="pageSize" onchange="this.form.submit()">
-                                <option value="5" {{ request('pageSize') == 5 ? 'selected' : '' }}>5</option>
-                                <option value="10" {{ request('pageSize') == 10 ? 'selected' : '' }}>10</option>
-                                <option value="20" {{ request('pageSize') == 20 ? 'selected' : '' }}>20</option>
-                                <option value="50" {{ request('pageSize') == 50 ? 'selected' : '' }}>50</option>
-                            </select>
-                            <label for="pageSize">entries</label>
-                        </form>
-                        <nav aria-label="Page navigation example">
-                            <ul class="pagination">
-                                <li class="page-item {{ $users->currentPage() == 1 ? ' disabled' : '' }}">
-                                    <a class="page-link"
-                                        href="{{ $users->appends(['pageSize' => request('pageSize')])->previousPageUrl() }}">Previous</a>
-                                </li>
-                                @for ($i = 1; $i <= $users->lastPage(); $i++)
-                                    <li class="page-item {{ $users->currentPage() == $i ? ' active' : '' }}">
-                                        <a class="page-link"
-                                            href="{{ $users->appends(['pageSize' => request('pageSize')])->url($i) }}">{{ $i }}</a>
-                                    </li>
-                                @endfor
-                                <li
-                                    class="page-item {{ $users->currentPage() == $users->lastPage() ? ' disabled' : '' }}">
-                                    <a class="page-link"
-                                        href="{{ $users->appends(['pageSize' => request('pageSize')])->nextPageUrl() }}">Next</a>
-                                </li>
-                            </ul>
-                        </nav>
-                    </div> --}}
                     <!-- Submit Button -->
                     <div class="d-flex justify-content-between mt-4">
                         <a href="{{ route('groups.index') }}" class="btn btn-secondary">

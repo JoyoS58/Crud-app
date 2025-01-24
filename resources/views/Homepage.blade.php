@@ -1,9 +1,9 @@
 @extends('layouts.home')
 
 @section('content')
-<div class="container-fluid p-0">
+<div class="container-fluid p-0 top-0 container justify-content-center align-items-center overflow-hidden" style="position:relative">
     <!-- Hero Section -->
-    <div class="bg-primary text-white text-center py-5">
+    <div class="bg-primary text-white text-center py-5" style="overflow: hidden;">
         <h1 class="display-4 fw-bold">Welcome to User Management</h1>
         <p class="lead">Effortlessly manage users, roles, and activities in one place.</p>
         <a href="{{ route('users.index') }}" class="btn btn-lg btn-light text-primary mt-3">Get Started</a>

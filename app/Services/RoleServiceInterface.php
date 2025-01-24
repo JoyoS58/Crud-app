@@ -10,5 +10,5 @@ interface RoleServiceInterface
     public function updateRole($id, array $data);
     public function deleteRole($id);
     public function addUserToRole($roleId, $userId);
-    public function removeUserFromRole($roleId, $userId);
+    public function updateUserRole($roleId, $userId);
 }

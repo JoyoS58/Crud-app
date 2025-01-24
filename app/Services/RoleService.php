@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\User;
 use App\Repositories\RoleRepositoryInterface;
+use Illuminate\Support\Facades\Log;
 
 class RoleService implements RoleServiceInterface
 {
@@ -41,23 +42,30 @@ class RoleService implements RoleServiceInterface
 
     public function addUserToRole($roleId, $userId)
     {
-        // Get the role by ID
-        $role = $this->roleRepository->getRoleById($roleId);
-        
+        // Cari role berdasarkan ID
+        $role = $this->getRoleById($roleId);
+
+        // Cari user berdasarkan ID
         $user = User::findOrFail($userId);
-        // Check if the user is already assigned to the role
-        if ($user->roles->contains($role)) {
-            return redirect()->route('roles.show', $roleId)
-                ->withErrors(['error' => 'User already has this role.']);
+
+        // Periksa apakah user sudah memiliki role yang sama
+        if ($user->role_id == $role->id) {
+            throw new \Exception('User already has this role.');
         }
+
+        // Tetapkan role ke user
+        $user->role_id = $role->id;
+        $user->save();
 
         return $role;
     }
 
-
-
-    public function removeUserFromRole($roleId, $userId)
+    public function updateUserRole($roleId, $userId)
     {
-        return $this->roleRepository->removeUserFromRole($roleId, $userId);
+        $user = User::findOrFail($userId);
+        $user->role_id = $roleId;
+        $user->save();
+
+        return $user;
     }
 }

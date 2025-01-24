@@ -1,11 +1,11 @@
 <?php
 
-// use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Route;
 // use App\Http\Controllers\DashboardController;
 // use App\Http\Controllers\UserController;
 // use App\Http\Controllers\AuthController;
 // use App\Http\Controllers\RoleController;
-// use App\Http\Controllers\GroupController;
+use App\Http\Controllers\GroupController;
 // use App\Http\Controllers\MemberController;
 // use App\Http\Controllers\ActivityController;
 // use App\Http\Controllers\HomeController;
@@ -52,3 +52,5 @@
 //     // Rute untuk manajemen activities
 //     Route::api('activities', ActivityController::class);
 // });
+
+Route::get('/groups-by-user', [GroupController::class, 'getGroupsByUserId'])->name('groups.byUser');

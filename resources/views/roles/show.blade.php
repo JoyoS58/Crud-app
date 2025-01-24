@@ -11,83 +11,55 @@
             <hr class="my-4" style="border-top: 2px solid #007bff; width: 50%;">
         </div>
 
-        <!-- Edit Role Button -->
-        <div class="text-end mb-4">
-            <a href="{{ route('roles.edit', $role->role_id) }}" class="btn btn-warning btn-lg">
-                <i class="fas fa-edit"></i> Edit Role
-            </a>
-        </div>
+        
 
         <!-- Users Assigned to this Role -->
         <h3 class="mb-3">Users in this Role</h3>
-        @if ($role->users->isEmpty())
+        @php
+            $assignedUsers = $users->filter(function($user) use ($role) {
+            return $user->role_id == $role->role_id;
+            });
+        @endphp
+        @if ($assignedUsers->isEmpty())
             <div class="alert alert-warning">
-                <i class="fas fa-exclamation-circle"></i> No users assigned to this role yet.
+            <i class="fas fa-exclamation-circle"></i> No users assigned to this role yet.
             </div>
         @else
             <div class="table-responsive shadow-sm rounded">
-                <table class="table table-hover table-striped table-bordered">
-                    <thead class="thead-dark text-center">
-                        <tr>
-                            <th>#</th>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($role->users as $index => $user)
-                            <tr>
-                                <td>{{ $index + 1 }}</td>
-                                <td><strong>{{ $user->name }}</strong></td>
-                                <td>{{ $user->email }}</td>
-                                <td class="text-center">
-                                    <form action="{{ route('roles.removeUser', $role->role_id) }}" method="POST"
-                                        style="display:inline;">
-                                        @csrf
-                                        <input type="hidden" name="userId" value="{{ $user->user_id }}">
-                                        <button type="submit" class="btn btn-danger btn-sm"
-                                            onclick="return confirm('Are you sure you want to remove this user?')">
-                                            <i class="fas fa-trash"></i> Remove
-                                        </button>
-                                    </form>
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+            <table class="table table-hover table-striped table-bordered">
+            <thead class="thead-dark text-center">
+            <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>Email</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach ($assignedUsers as $index => $user)
+                <tr>
+                <td>{{ $loop->iteration }}</td>
+                <td><strong>{{ $user->name }}</strong></td>
+                <td>{{ $user->email }}</td>
+                </tr>
+            @endforeach
+            </tbody>
+            </table>
             </div>
         @endif
 
-        <!-- Add User to Role Section -->
-        <hr>
-        <h3 class="mb-3">Add User to Role</h3>
-        <form id="addUserForm" action="{{ route('roles.addUser', $role->role_id) }}" method="POST"
-            class="p-4 shadow-sm rounded border">
-            @csrf
-            <div class="mb-3">
-                <label for="userId" class="form-label">Select User</label>
-                <select name="userId" id="userId" class="form-select" required>
-                    <option value="" disabled selected>Search and select a user</option>
-                    @foreach ($users as $user)
-                        @if (!in_array($user->user_id, $role->users->pluck('user_id')->toArray()))
-                            <option value="{{ $user->user_id }}">{{ $user->name }} ({{ $user->email }})</option>
-                        @endif
-                    @endforeach
-                </select>
-            </div>
+        
             <div class="d-flex justify-content-between mt-4">
-                <a href="{{ route('roles.index') }}" class="btn btn-secondary btn-lg">
-                    <i class="fas fa-arrow-left"></i> Back to List
-                </a>
-                <button type="submit" class="btn btn-primary btn-lg">
-                    <i class="fas fa-user-plus"></i> Add User
-                </button>
+            <a href="{{ route('roles.index') }}" class="btn btn-secondary btn-lg">
+                <i class="fas fa-arrow-left"></i> Back to List
+            </a>
+            {{-- <button type="submit" class="btn btn-primary btn-lg">
+                <i class="fas fa-user-plus"></i> Add User
+            </button> --}}
             </div>
-        </form>
+        {{-- </form>
         <div id="successMessage" class="alert alert-success mt-4" style="display: none;">
             <i class="fas fa-check-circle"></i> User added successfully!
-        </div>
+        </div> --}}
     </div>
 @endsection
 

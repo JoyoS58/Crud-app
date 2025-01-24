@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Models\GroupUser;
+use App\Models\User;
 use App\Repositories\GroupRepositoryInterface;
 use App\Services\GroupServiceInterface;
 use App\Services\UserServiceInterface;
@@ -76,5 +78,9 @@ class GroupService implements GroupServiceInterface
     public function groupNameExists($groupName)
     {
         return $this->groupRepository->groupExists($groupName);
+    }
+    public function getGroupsByUserId($userId)
+    {
+        return GroupUser::find($userId)?->groups ?? collect();
     }
 }

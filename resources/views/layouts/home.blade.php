@@ -39,7 +39,7 @@
             padding-top: 56px; 
         } */
         body {
-            min-height: 100%;
+            height: 100%;
             display: flex;
             flex-direction: column;
         }
@@ -47,6 +47,8 @@
             flex: 1;
             padding-top: 20px;
             margin-top: 20px;
+            overflow:hidden;
+            top: 0;
         }
         footer {
             background-color: #f8f9fa;

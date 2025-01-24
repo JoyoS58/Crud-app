@@ -31,7 +31,8 @@ class GroupController extends Controller
     // Menampilkan form tambah group
     public function create()
     {
-        $users = $this->userService->getAllUsers();
+        $count = $this->userService->countUsers();
+        $users = $this->userService->getAllUsers($count);
         return view('groups.create', compact('users'));
     }
 
@@ -68,7 +69,8 @@ class GroupController extends Controller
     public function edit($id)
     {
         $group = $this->groupService->getGroupById($id);
-        $users = $this->userService->getAllUsers();
+        $count = $this->userService->countUsers();
+        $users = $this->userService->getAllUsers($count);
 
         return view('groups.edit', compact('group', 'users'));
     }

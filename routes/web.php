@@ -22,14 +22,14 @@ use App\Http\Controllers\UserActivityController;
 
 
 
-Route::get('/home', [HomeController::class, 'index'])->name('home');
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
 // Halaman login dan register
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [AuthController::class, 'login']);
     Route::get('/register', [AuthController::class, 'showRegistrationForm'])->name('register');
-    Route::post('/register', [AuthController::class, 'register']);    
+    Route::post('/register', [AuthController::class, 'register']);
 });
 
 // Rute logout
@@ -45,10 +45,16 @@ Route::middleware('auth')->group(function () {
     // Rute untuk manajemen roles
     Route::resource('roles', RoleController::class);
     Route::post('roles/{role}/add-user', [RoleController::class, 'addUserToRole'])->name('roles.addUser');
-    Route::post('roles/{role}/remove-user', [RoleController::class, 'removeUserFromRole'])->name('roles.removeUser');
+    // Route::post('roles/{role}/remove-user', [RoleController::class, 'removeUserFromRole'])->name('roles.removeUser');
+    Route::post('/roles/{role}/update-user-role', [RoleController::class, 'updateUserRole'])->name('roles.updateUserRole');
+
 
     // Rute untuk manajemen grup
     Route::resource('groups', GroupController::class);
+    // web.php
+    // Route::get('/users/{user}/groups', [UserController::class, 'getUserGroups']);
+    Route::get('/groups-by-user', [GroupController::class, 'getGroupsByUserId'])->name('groups.byUser');
+
 
     // Rute untuk manajemen member
     Route::resource('members', MemberController::class);

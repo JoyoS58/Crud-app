@@ -23,8 +23,10 @@
                         <select class="form-select @error('userId') is-invalid @enderror" id="userId" name="userId"
                             required>
                             @foreach ($users as $user)
-                                <option value="{{ $user->user_id }}"
-                                    {{ $user->user_id == $member->user_id ? 'selected' : '' }}>{{ $user->name }}</option>
+                            @if ($user->user_id != 1)
+                                    <option value="{{ $user->user_id }}"
+                                        {{ $user->user_id == $member->user_id ? 'selected' : '' }}>{{ $user->name }}</option>
+                                @endif
                             @endforeach
                         </select>
                         @error('userId')

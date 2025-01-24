@@ -1,7 +1,7 @@
 @extends('layouts.home')
 
 @section('content')
-<div class="container d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+<div class="container d-flex justify-content-center align-items-center h-90 overflow-hidden mt-5" style="position: fixed">
     <div class="card shadow-lg p-4" style="width: 100%; max-width: 400px; border-radius: 10px;">
         <h2 class="text-center mb-4 text-primary">Create an Account</h2>
         <form method="POST" action="{{ route('register') }}" class="needs-validation" novalidate>

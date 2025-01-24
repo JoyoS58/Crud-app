@@ -8,6 +8,7 @@ use App\Http\Requests\UpdateUserRequest;
 use App\Services\Contracts\FileUploadServiceInterface;
 use App\Services\FileUploadService;
 use App\Models\User;
+use App\Services\GroupServiceInterface;
 use App\Services\RoleService;
 use Illuminate\Http\Request;
 
@@ -17,11 +18,13 @@ class UserController extends Controller
 {
     protected $userService;
     protected $roleService;
+    protected $groupService;
     protected $fileUploadService;
-    public function __construct(UserService $userService,RoleService $roleService, FileUploadServiceInterface $fileUploadService) // Constructor to inject the user service
+    public function __construct(UserService $userService, RoleService $roleService, FileUploadServiceInterface $fileUploadService, GroupServiceInterface $groupService) // Constructor to inject the user service
     {
         $this->userService = $userService;
         $this->roleService = $roleService;
+        $this->groupService = $groupService;
         $this->fileUploadService = $fileUploadService;
     }
     public function index(Request $request)
@@ -37,8 +40,6 @@ class UserController extends Controller
 
         return view('users.index', compact('users'));
     }
-
-
 
     // Menampilkan form untuk menambah pengguna
     public function create()
@@ -59,7 +60,10 @@ class UserController extends Controller
     public function show($id)
     {
         $user = $this->userService->getUserById($id);
-        return view('users.show', compact('user'));
+        $roles = $this->roleService->getAllRoles();
+        $userRole = $roles->firstWhere('role_id', $user->role_id);
+
+        return view('users.show', compact('user', 'userRole'));
     }
 
     // Menampilkan form untuk mengedit pengguna
@@ -91,11 +95,29 @@ class UserController extends Controller
         }
     }
 
-
     // Menghapus pengguna
     public function destroy($id)
     {
         $this->userService->deleteUser($id);
         return redirect()->route('users.index')->with('status', 'User deleted successfully.');
     }
+
+    // Memperbarui role pengguna
+    // public function updateUserRole(Request $request, $id)
+    // {
+    //     $request->validate([
+    //         'role_id' => 'required|exists:roles,id',
+    //     ]);
+
+    //     $data = ['role_id' => $request->input('role_id')];
+    //     $this->userService->updateUser($id, $data);
+
+    //     return redirect()->route('users.index')->with('status', 'User role updated successfully.');
+    // }
+
+    // public function getUserGroups($userId)
+    // {
+    //     $groups = $this->groupService->getGroupsByUserId($userId);
+    //     return response()->json($groups);
+    // }
 }

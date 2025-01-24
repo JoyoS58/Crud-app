@@ -25,22 +25,18 @@
                     <li class="list-group-item">
                         <strong>Joined:</strong> {{ $user->created_at->format('d M, Y') }}
                     </li>
+                    <li class="list-group-item">
+                        @if ($userRole)
+                            <strong>Role:</strong> {{ $userRole->role_name }}
+                        @else
+                            <strong>Role:</strong> No roles assigned
+                        @endif
+                    </li>                    
+                    <li class="list-group-item">
+                        <strong>Profile:</strong>
+                        <img src="{{ asset('storage/user/profile/' . $user->profile) }}" alt="Profile Image" class="img-fluid rounded">
+                    </li>
                 </ul>
-
-                <!-- User Roles -->
-                <h3 class="mt-4 mb-3">Roles Assigned</h3>
-                @if ($user->roles->isNotEmpty())
-                    <ul class="list-group">
-                        @foreach ($user->roles as $role)
-                            <li class="list-group-item">
-                                <strong>{{ $role->role_name }}</strong>
-                            </li>
-                        @endforeach
-                    </ul>
-                @else
-                    <p>No roles assigned to this user yet.</p>
-                @endif
-
             </div>
         </div>
 

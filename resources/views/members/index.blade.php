@@ -47,7 +47,7 @@
                                     <td>{{ $index + 1 }}</td> <!-- Member ID -->
                                     <td>{{ $member->user->name }} ({{ $member->user->email }})</td>
                                     <!-- User Name and Email -->
-                                    <td>{{ $member->group->name ?? 'None' }}</td> <!-- Group Name -->
+                                    <td>{{ $member->group ? $member->group->group_name : 'None' }}</td> <!-- Group Name -->
                                     <td>{{ $member->join_date ? $member->join_date: 'No Date' }}
                                     </td> <!-- Join Date -->
                                     <td>

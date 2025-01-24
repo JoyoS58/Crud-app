@@ -8,6 +8,7 @@ use App\Services\GroupServiceInterface;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreMemberRequest;
 use App\Http\Requests\UpdateMemberRequest;
+use App\Models\GroupUser;
 
 class MemberController extends Controller
 {
@@ -30,9 +31,12 @@ class MemberController extends Controller
 
     public function create()
     {
-        $users = $this->userService->getAllUsers();
+        $count = $this->userService->countUsers();
+        $users = $this->userService->getAllUsers($count);
         $groups = $this->groupService->getAllGroups();
-        return view('members.create', compact('users', 'groups'));
+        $userId = request()->input('user_id');
+        $groupUser = $this->groupService->getGroupsByUserId($userId);
+        return view('members.create', compact('users', 'groups', 'groupUser'));
     }
 
     public function store(StoreMemberRequest $request)
@@ -57,7 +61,8 @@ class MemberController extends Controller
     public function edit($id)
     {
         $member = $this->memberService->getMemberById($id);
-        $users = $this->userService->getAllUsers();
+        $count = $this->userService->countUsers();
+        $users = $this->userService->getAllUsers($count);
         $groups = $this->groupService->getAllGroups();
         return view('members.edit', compact('member', 'users', 'groups'));
     }
@@ -79,5 +84,12 @@ class MemberController extends Controller
     {
         $this->memberService->deleteMember($id);
         return redirect()->route('members.index')->with('success', 'Member deleted successfully');
+    }
+
+    public function getGroupsByUserId(Request $request)
+    {
+        $userId = $request->input('user_id');
+        $groups = GroupUser::where('user_id', $userId)->with('groups')->get()->pluck('groups');
+        return response()->json($groups);
     }
 }

@@ -51,22 +51,76 @@
                         @enderror
                     </div>
 
-                    <!-- Users Checkboxes -->
-                    <div class="mb4">
+                    <!-- Users Select -->
+                    <div class="mb-4">
                         <label class="form-label font-weight-bold">Select Users</label><br>
                         <div class="row">
-
-                            @foreach ($users as $user)
-                            <div class="form-check ml-4">
-                                <input type="checkbox" name="user_ids[]" value="{{ $user->user_id }}"
-                                class="form-check-input @error('user_ids') is-invalid @enderror"
-                                id="user_{{ $user->user_id }}"
-                                {{ in_array($user->user_id, $group->members->pluck('user_id')->toArray()) ? 'checked' : '' }}>
-                                <label class="form-check-label" for="user_{{ $user->user_id }}">
-                                    {{ $user->name }}
-                                </label>
+                            <div class="col-md-4 border-end" style="max-height: 300px; overflow-y: auto;">
+                                <h5 class="text-center">Available Users</h5>
+                                @foreach ($users as $user)
+                                @if ($user->user_id != 1)
+                                @if (!in_array($user->user_id, $group->members->pluck('user_id')->toArray()))
+                                    <button type="button" class="btn btn-outline-primary btn-block mb-2" onclick="selectUser({{ $user->user_id }})">
+                                        {{ $user->name }}
+                                    </button>
+                                @endif
+                                @endif
+                                @endforeach
                             </div>
-                            @endforeach
+                            <div class="col-md-4 border-end" style="max-height: 300px; overflow-y: auto;">
+                                <h5 class="text-center">Selected Users</h5>
+                                <div id="selected-users">
+                                    @foreach ($group->members as $member)
+                                        <button type="button" class="btn btn-outline-success btn-block mb-2" onclick="deselectUser({{ $member->user_id }})">
+                                            {{ $member->name }}
+                                        </button>
+                                        <input type="hidden" name="user_ids[]" value="{{ $member->user_id }}">
+                                    @endforeach
+                                </div>
+                            </div>
+                            <div class="col-md-4" style="max-height: 300px; overflow-y: auto;">
+                                <h5 class="text-center">Group Members</h5>
+                                @foreach ($group->members as $member)
+                                    <button type="button" class="btn btn-outline-secondary btn-block mb-2" disabled>
+                                        {{ $member->name }}
+                                    </button>
+                                @endforeach
+                            </div>
+                        </div>
+                    </div>
+
+                            <script>
+                                function selectUser(userId) {
+                                    // Move user from available to selected
+                                    const userButton = document.querySelector(`button[onclick="selectUser(${userId})"]`);
+                                    const selectedUsersDiv = document.getElementById('selected-users');
+                                    selectedUsersDiv.appendChild(userButton);
+                                    userButton.classList.remove('btn-outline-primary');
+                                    userButton.classList.add('btn-outline-success');
+                                    userButton.setAttribute('onclick', `deselectUser(${userId})`);
+
+                                    // Add hidden input
+                                    const input = document.createElement('input');
+                                    input.type = 'hidden';
+                                    input.name = 'user_ids[]';
+                                    input.value = userId;
+                                    selectedUsersDiv.appendChild(input);
+                                }
+
+                                function deselectUser(userId) {
+                                    // Move user from selected to available
+                                    const userButton = document.querySelector(`button[onclick="deselectUser(${userId})"]`);
+                                    const availableUsersDiv = document.querySelector('.col-md-4:first-child');
+                                    availableUsersDiv.appendChild(userButton);
+                                    userButton.classList.remove('btn-outline-success');
+                                    userButton.classList.add('btn-outline-primary');
+                                    userButton.setAttribute('onclick', `selectUser(${userId})`);
+
+                                    // Remove hidden input
+                                    const input = document.querySelector(`input[name="user_ids[]"][value="${userId}"]`);
+                                    input.remove();
+                                }
+                            </script>
                         </div>
                         @error('user_ids')
                             <div class="invalid-feedback">{{ $message }}</div>

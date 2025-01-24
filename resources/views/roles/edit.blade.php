@@ -38,6 +38,55 @@
                         @enderror
                     </div>
 
+                    <!-- Add User to Role Section -->
+                    <div style="display: none;">
+
+                        <form id="addUserForm" action="{{ route('roles.addUser', $role->role_id) }}" method="POST"
+                            class="p-4 shadow-sm rounded border" style="display: none;">
+                            @csrf
+                            <div class="mb-3">
+                                <label for="userId" class="form-label">Select User</label>
+                                <select name="userId" id="userId" class="form-select" required>
+                                    <option value="" disabled selected>Search and select a user</option>
+                                    @foreach ($users as $user)
+                                        @if ($user->role_id != $role->role_id && $user->role_id != '1')
+                                            <option value="{{ $user->id }}">{{ $user->name }} ({{ $user->email }})
+                                            </option>
+                                        @endif
+                                    @endforeach
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-lg">Add User</button>
+                        </form>
+                    </div>
+
+                    <!-- Update User Role Section -->
+                    <hr>
+                    <h3 class="mb-3">Update User Role</h3>
+                    <form id="updateUserRoleForm" action="{{ route('roles.updateUserRole', $role->role_id) }}" method="POST"
+                        class="p-4 shadow-sm rounded border">
+                        @csrf
+                        <div class="mb-3">
+                            <label for="userId" class="form-label">Select User</label>
+                            <select name="userId" id="userId" class="form-select" required>
+                                <option value="" disabled selected>Search and select a user</option>
+                                @foreach ($users as $user)
+                                    @if ($user->role_id != $role->role_id && $user->role_id != '1')
+                                        <!-- Tampilkan hanya user yang tidak memiliki role ini -->
+                                        <option value="{{ $user->user_id }}">{{ $user->name }} ({{ $user->email }})
+                                        </option>
+                                    @endif
+                                @endforeach
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-lg">Update User Role</button>
+                    </form>
+
+
+
+
+
+
                     <!-- Buttons -->
                     <div class="d-flex justify-content-between mt-4">
                         <a href="{{ route('roles.index') }}" class="btn btn-secondary px-4 py-2">

@@ -8,7 +8,8 @@ use App\Services\RoleServiceInterface;
 use App\Services\UserServiceInterface;
 use App\Http\Requests\StoreRoleRequest;
 use App\Http\Requests\UpdateRoleRequest;
-
+use App\Http\Requests\UpdateUserFromRoleRequest;
+use App\Models\User;
 
 class RoleController extends Controller
 {
@@ -53,8 +54,10 @@ class RoleController extends Controller
     // Menampilkan form edit role
     public function edit($id)
     {
+        $count = $this->userService->countUsers();
+        $users = $this->userService->getAllUsers($count);
         $role = $this->roleService->getRoleById($id);
-        return view('roles.edit', compact('role'));
+        return view('roles.edit', compact('role', 'users'));
     }
 
     // Mengupdate role
@@ -71,27 +74,38 @@ class RoleController extends Controller
         return redirect()->route('roles.index')->with('success', 'Role deleted successfully.');
     }
 
-    // Menambahkan user ke role
     public function addUserToRole(AddUserToRoleRequest $request, $roleId)
     {
         try {
-            // Validate the request
+            // Validasi request
             $validated = $request->validated();
 
-            // Add the user to the role
+            // Tambahkan user ke role
             $this->roleService->addUserToRole($roleId, $validated['userId']);
 
-            // Redirect with success message
+            // Redirect dengan pesan sukses
             return redirect()->route('roles.show', $roleId)->with('success', 'User added to role successfully.');
         } catch (\Exception $e) {
+            // Redirect dengan pesan error
             return redirect()->back()->withErrors(['error' => 'Failed to add user to role: ' . $e->getMessage()]);
         }
     }
 
-    // Menghapus user dari role
-    public function removeUserFromRole(RemoveUserFromRoleRequest $request, $roleId)
-    {
-        $this->roleService->removeUserFromRole($roleId, $request->userId);
-        return redirect()->route('roles.show', $roleId)->with('success', 'User removed from role successfully.');
+    public function updateUserRole(UpdateUserFromRoleRequest $request, $roleId)
+{
+    try {
+
+        $validated = $request->validated();
+
+        $this->roleService->updateUserRole($roleId, $validated['userId']);
+
+        return redirect()->route('roles.show', $roleId)
+            ->with('success', 'User role updated successfully.');
+    } catch (\Exception $e) {
+        return redirect()->route('roles.show', $roleId)
+            ->withErrors(['error' => 'Failed to update user role: ' . $e->getMessage()]);
     }
+}
+
+
 }
