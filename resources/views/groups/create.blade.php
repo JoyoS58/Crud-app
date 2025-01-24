@@ -83,7 +83,7 @@
                         @enderror
                     </div>
 
-                    <!-- Pagination Links -->
+                    {{-- <!-- Pagination Links -->
                     <div class="d-flex justify-content-between align-items-center mt-4">
                         <form method="GET" action="{{ route('groups.create') }}">
                             <label for="pageSize">Show</label>
@@ -114,7 +114,7 @@
                                 </li>
                             </ul>
                         </nav>
-                    </div>
+                    </div> --}}
                     <!-- Submit Button -->
                     <div class="d-flex justify-content-between mt-4">
                         <a href="{{ route('groups.index') }}" class="btn btn-secondary">

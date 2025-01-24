@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Repositories\ActivityRepositoryInterface;
 use App\Models\User;
 use App\Models\Group;
+use App\Models\GroupUser;
 
 class ActivityService
 {
@@ -49,6 +50,7 @@ class ActivityService
     public function getFormDependencies()
     {
         return [
+            'groupUser'=> GroupUser::all(),
             'users' => User::all(),
             'groups' => Group::all(),
         ];

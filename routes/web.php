@@ -9,6 +9,7 @@ use App\Http\Controllers\GroupController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\UserActivityController;
 
 // /*
 // |---------------------------------------------------------------------- 
@@ -20,13 +21,15 @@ use App\Http\Controllers\HomeController;
 // */
 
 
-Route::get('/home', [HomeController::class, 'index']);
+
+Route::get('/home', [HomeController::class, 'index'])->name('home');
+
 // Halaman login dan register
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [AuthController::class, 'login']);
     Route::get('/register', [AuthController::class, 'showRegistrationForm'])->name('register');
-    Route::post('/register', [AuthController::class, 'register']);
+    Route::post('/register', [AuthController::class, 'register']);    
 });
 
 // Rute logout
@@ -52,4 +55,5 @@ Route::middleware('auth')->group(function () {
 
     // Rute untuk manajemen activities
     Route::resource('activities', ActivityController::class);
+    Route::resource('userActivities', UserActivityController::class);
 });

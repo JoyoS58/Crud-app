@@ -4,11 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreActivityRequest;
 use App\Http\Requests\UpdateActivityRequest;
+use App\Models\Activity;
+use App\Models\Group;
+use App\Models\User;
 use App\Services\ActivityService;
 use App\Services\Contracts\FileUploadServiceInterface;
 use Illuminate\Http\Request;
 
-class ActivityController extends Controller
+
+class UserActivityController extends Controller
 {
     protected $activityService;
     protected $fileUploadService;
@@ -21,43 +25,54 @@ class ActivityController extends Controller
 
     public function index()
     {
-        $activities = $this->activityService->getAllActivities();
-        return view('activities.index', compact('activities'));
+        $userId = auth()->id(); // Get the logged-in user's ID
+        $activities = Activity::where('user_id', $userId)->get(); // Filter activities by user ID
+
+        return view('userActivities.index', compact('activities'));
     }
 
     public function create()
     {
-        $data = $this->activityService->getFormDependencies();
-        return view('activities.create', $data);
+
+        $users = User::all();
+        $groups = Group::whereHas('users', function ($query) {
+            $query->where('users.user_id', auth()->id());
+        })->get();
+
+        return view('userActivities.create', compact('groups', 'users'));
     }
 
     public function store(StoreActivityRequest $request)
     {
+        $userId = auth()->id();
+        $activity = Activity::where('user_id', $userId)->first();
         $validated = $request->validated();
+
         if ($request->hasFile('file')) {
-            // Hapus file lama jika ada
             if (!empty($activity) && !empty($activity->file)) {
                 $this->fileUploadService->deleteFile('activity/file/' . $activity->file);
             }
-    
+
             // Upload file baru
             $validated['file'] = $this->fileUploadService->uploadFile($request->file('file'), 'activity/file/');
         }
+
         $this->activityService->createActivity($validated);
 
-        return redirect()->route('activities.index')->with('success', 'Activity created successfully.');
+        return redirect()->route('userActivities.index')->with('success', 'Activity created successfully.');
     }
+
 
     public function show($id)
     {
         $activity = $this->activityService->getActivityById($id);
-        return view('activities.show', compact('activity'));
+        return view('userActivities.show', compact('activity'));
     }
 
     public function edit($id)
     {
         $data = $this->activityService->getEditDependencies($id);
-        return view('activities.edit', $data);
+        return view('userActivities.edit', $data);
     }
 
     public function update(UpdateActivityRequest $request, $id)
@@ -74,8 +89,9 @@ class ActivityController extends Controller
 
         $this->activityService->updateActivity($id, $validated);
 
-        return redirect()->route('activities.index')->with('success', 'Activity updated successfully.');
+        return redirect()->route('userActivities.index')->with('success', 'Activity updated successfully.');
     }
+
 
     public function destroy($id)
     {
@@ -84,8 +100,9 @@ class ActivityController extends Controller
         if (!empty($activity->file)) {
             $this->fileUploadService->deleteFile('activity/file/' . $activity->file);
         }
+
         $this->activityService->deleteActivity($id);
 
-        return redirect()->route('activities.index')->with('success', 'Activity deleted successfully.');
+        return redirect()->route('userActivities.index')->with('success', 'Activity deleted successfully.');
     }
 }

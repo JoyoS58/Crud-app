@@ -3,22 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ config('app.name', 'Managemen User') }}</title>
-    {{-- <link rel="stylesheet" href="{{ asset('css/app.css') }}"> --}}
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <title>@yield('title', 'User Management')</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 
     <style>
-        
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
         nav {
             background-color: #333;
             color: white;
@@ -37,50 +27,78 @@
         nav button:hover, nav a:hover {
             text-decoration: underline;
         }
+    </style>
+    <style>
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+        /* body {
+            padding-top: 56px; 
+        } */
+        body {
+            min-height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
         main {
             flex: 1;
-            padding: 2rem;
+            padding-top: 20px;
+            margin-top: 20px;
         }
         footer {
-            background-color: #333;
-            color: white;
-            text-align: center;
-            padding: 1rem;
+            background-color: #f8f9fa;
+            padding: 10px 0;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            z-index: 1000;
         }
     </style>
 </head>
 <body>
-    <nav>
-        @auth
-        {{-- <form action="{{ route('logout') }}" method="POST">
-            @csrf
-            <button type="submit">Logout</button>
-        </form>
-        @else --}}
-        <div>
-            <a href="{{ route('login') }}">Login</a>
-            <a href="{{ route('register') }}">Register</a>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <i class="fas fa-user"></i>
+            <a class="navbar-brand fw-bold" href="{{ route('home') }}">User Management</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('users.index') ? 'active' : '' }}" href="{{ route('users.index') }}">Users</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('roles.index') ? 'active' : '' }}" href="{{ route('roles.index') }}">Roles</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('activities.index') ? 'active' : '' }}" href="{{ route('activities.index') }}">Activities</a>
+                    </li>
+                </ul>
+            </div>
         </div>
-        @endauth
     </nav>
+
+    <!-- Main Content -->
     <main>
-        @yield('content')
+        <div class="container">
+            @yield('content')
+        </div>
     </main>
-    <footer>
-        <p>&copy; {{ date('Y') }} Your Company. All rights reserved.</p>
+
+    <!-- Footer -->
+    <footer class="text-center">
+        <div class="container">
+            <p class="mb-0">© {{ date('Y') }} User Management. All rights reserved.</p>
+            <small class="text-muted">Built with Laravel and Bootstrap</small>
+        </div>
     </footer>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const navLinks = document.querySelectorAll('nav a, nav button');
-            navLinks.forEach(link => {
-                link.addEventListener('mouseover', function() {
-                    this.style.color = '#ffcc00';
-                });
-                link.addEventListener('mouseout', function() {
-                    this.style.color = 'white';
-                });
-            });
-        });
-    </script>
+
+    <!-- Bootstrap Script -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -1,73 +1,57 @@
-@extends('layouts.app')
+@extends('layouts.appUser')
 
 @section('content')
     <div class="card p-4 shadow-lg border-1">
         <!-- Page Header -->
         <div class="text-center mb-5">
-            <h1 class="display-4 font-weight-bold text-primary">
-                <i class="fas fa-edit"></i> Edit Activity: {{ $activity->activity_name }}
+            <h1 class="display-5 font-weight-bold text-primary">
+                <i class="fas fa-calendar-plus"></i> Create New Activity
             </h1>
-            <p class="lead text-muted">Update the activity details below.</p>
+            <p class="lead text-muted">Fill in the details below to create a new activity.</p>
         </div>
 
-        <!-- Edit Activity Form -->
+        <!-- Activity Creation Form -->
         <div class="card shadow-sm rounded-lg">
             <div class="card-body">
-                <form action="{{ route('activities.update', $activity->activity_id) }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ route('userActivities.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
-                    @method('PUT')
 
                     <!-- Activity Name -->
                     <div class="mb-4">
                         <label for="activity_name" class="form-label font-weight-bold">Activity Name</label>
                         <input type="text" class="form-control @error('activity_name') is-invalid @enderror"
-                            id="activity_name" name="activity_name"
-                            value="{{ old('activity_name', $activity->activity_name) }}" required>
+                            id="activity_name" name="activity_name" required value="{{ old('activity_name') }}">
                         @error('activity_name')
-                            <div class="invalid-feedback">{{ $message }}</div>
+                            <div class="text-danger mt-2">{{ $message }}</div>
                         @enderror
                     </div>
 
-                    <!-- Group Select -->
+                    <!-- Group Selection -->
                     <div class="mb-4">
                         <label for="group_id" class="form-label font-weight-bold">Group</label>
                         <select class="form-select @error('group_id') is-invalid @enderror" id="group_id" name="group_id">
-                            <option value="">Select Group</option>
+                            <option value="" disabled selected>Select Group</option>
                             @foreach ($groups as $group)
                                 <option value="{{ $group->group_id }}"
-                                    {{ $group->group_id == $activity->group_id ? 'selected' : '' }}>
+                                    {{ old('group_id') == $group->group_id ? 'selected' : '' }}>
                                     {{ $group->group_name }}
                                 </option>
                             @endforeach
                         </select>
                         @error('group_id')
-                            <div class="invalid-feedback">{{ $message }}</div>
+                            <div class="text-danger mt-2">{{ $message }}</div>
                         @enderror
                     </div>
 
-                    <!-- User Select -->
-                    <div class="mb-4">
-                        <label for="user_id" class="form-label font-weight-bold">User</label>
-                        <select class="form-select @error('user_id') is-invalid @enderror" id="user_id" name="user_id"
-                            required>
-                            @foreach ($users as $user)
-                                <option value="{{ $user->user_id }}"
-                                    {{ $user->user_id == $activity->user_id ? 'selected' : '' }}>
-                                    {{ $user->name }}
-                                </option>
-                            @endforeach
-                        </select>
-                        @error('user_id')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
+                    <!-- User ID (Hidden) -->
+                    <input type="hidden" name="user_id" value="{{ auth()->user()->user_id }}">
 
                     <!-- Activity Description -->
                     <div class="mb-4">
                         <label for="description" class="form-label font-weight-bold">Activity Description</label>
-                        <textarea class="form-control @error('description') is-invalid @enderror" id="description" name="description">{{ old('description', $activity->description) }}</textarea>
+                        <textarea class="form-control @error('description') is-invalid @enderror" id="description" name="description">{{ old('description') }}</textarea>
                         @error('description')
-                            <div class="invalid-feedback">{{ $message }}</div>
+                            <div class="text-danger mt-2">{{ $message }}</div>
                         @enderror
                     </div>
                     <!-- File Field -->
@@ -78,27 +62,26 @@
                         @error('file')
                             <div class="text-danger mt-2">{{ $message }}</div>
                         @enderror
-
-                        <!-- Show Existing File -->
-                        @if (!empty($activity->file))
+                    
+                        @if(!empty($activity->file))
                             <div class="mt-3">
-                                @if (in_array(pathinfo($activity->file, PATHINFO_EXTENSION), ['jpg', 'jpeg', 'png']))
-                                    <img src="{{ $activity->file_path }}" alt="File Preview" class="img-fluid"
-                                        style="max-width: 200px;">
+                                @if(in_array(pathinfo($activity->file, PATHINFO_EXTENSION), ['jpg', 'jpeg', 'png']))
+                                    <img src="{{ $activity->file_path }}" alt="Preview" class="img-fluid" style="max-width: 200px;">
                                 @else
-                                    <a href="{{ $activity->file_path }}" target="_blank">View Current File</a>
+                                    <a href="{{ $activity->file_path }}" target="_blank">View Uploaded File</a>
                                 @endif
                             </div>
                         @endif
                     </div>
+                    
 
                     <!-- Submit Button -->
                     <div class="d-flex justify-content-between mt-4">
-                        <a href="{{ route('activities.index') }}" class="btn btn-secondary px-4 py-2">
+                        <a href="{{ route('userActivities.index') }}" class="btn btn-secondary px-4 py-2">
                             <i class="fas fa-arrow-left"></i> Back to List
                         </a>
-                        <button type="submit" class="btn btn-warning px-4 py-2">
-                            <i class="fas fa-save"></i> Update Activity
+                        <button type="submit" class="btn btn-success px-4 py-2">
+                            <i class="fas fa-save"></i> Create Activity
                         </button>
                     </div>
                 </form>
@@ -115,6 +98,7 @@
             border-radius: 8px;
             font-size: 1rem;
             padding: 12px 16px;
+            /* Uniform padding for inputs and selects */
         }
 
         .form-control:focus,
@@ -165,7 +149,7 @@
         }
 
         /* Adjust spacing for submit button */
-        .btn-primary,
+        .btn-success,
         .btn-secondary {
             font-size: 1rem;
             font-weight: 600;
@@ -176,7 +160,9 @@
         .form-select,
         .form-control {
             width: 100%;
+            /* Ensure inputs take up full width */
             max-width: 500px;
+            /* Limit maximum width for better alignment */
             margin-left: auto;
             margin-right: auto;
         }
@@ -184,6 +170,7 @@
         /* Align form container */
         .card-body {
             max-width: 600px;
+            /* Make the form more centered */
             margin-left: auto;
             margin-right: auto;
         }

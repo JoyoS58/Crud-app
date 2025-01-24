@@ -93,7 +93,11 @@
         <h5 class="m-0"></h5>
         <div class="text-center mb-4 pt-4">
             {{ Auth::user()->name }}
-            <img src="{{ asset('storage/user/profile/' . Auth::user()->profile) }}" alt="Profile Picture" class="rounded-circle" width="50" height="50" style="margin-top: 3px">
+            @if(Auth::user()->profile)
+                <img src="{{ asset('storage/user/profile/' . Auth::user()->profile) }}" alt="Profile Picture" class="rounded-circle" width="50" height="50" style="margin-top: 3px; margin-left:5px;">
+            @else
+                <i class="fas fa-user" style="margin-left: 5px; border-width: 1px"></i>
+            @endif
         </div>
     </div>
 

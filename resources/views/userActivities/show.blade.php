@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.appUser')
 
 @section('content')
     <div class="card p-4 shadow-lg border-1">
@@ -39,7 +39,7 @@
 
         <!-- Back Button -->
         <div class="mt-4 text-center">
-            <a href="{{ route('activities.index') }}" class="btn btn-secondary btn-lg">
+            <a href="{{ route('userActivities.index') }}" class="btn btn-secondary btn-lg">
                 <i class="fas fa-arrow-left"></i> Back to Activities
             </a>
         </div>

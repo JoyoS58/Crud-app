@@ -13,7 +13,7 @@
         <!-- Activity Creation Form -->
         <div class="card shadow-sm rounded-lg">
             <div class="card-body">
-                <form action="{{ route('activities.store') }}" method="POST">
+                <form action="{{ route('activities.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
 
                     <!-- Activity Name -->
@@ -69,6 +69,25 @@
                         @error('description')
                             <div class="text-danger mt-2">{{ $message }}</div>
                         @enderror
+                    </div>
+                    <!-- File Field -->
+                    <div class="mb-4">
+                        <label for="file" class="form-label font-weight-bold">File Attachment</label>
+                        <input type="file" name="file" id="file" accept=".pdf,.jpg,.jpeg,.png"
+                            class="form-control @error('file') is-invalid @enderror">
+                        @error('file')
+                            <div class="text-danger mt-2">{{ $message }}</div>
+                        @enderror
+                    
+                        @if(!empty($activity->file))
+                            <div class="mt-3">
+                                @if(in_array(pathinfo($activity->file, PATHINFO_EXTENSION), ['jpg', 'jpeg', 'png']))
+                                    <img src="{{ $activity->file_path }}" alt="Preview" class="img-fluid" style="max-width: 200px;">
+                                @else
+                                    <a href="{{ $activity->file_path }}" target="_blank">View Uploaded File</a>
+                                @endif
+                            </div>
+                        @endif
                     </div>
 
                     <!-- Submit Button -->

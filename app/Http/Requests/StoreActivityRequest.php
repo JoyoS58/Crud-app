@@ -26,6 +26,7 @@ class StoreActivityRequest extends FormRequest
             'group_id' => 'nullable|exists:groups,group_id',
             'user_id' => 'required|exists:users,user_id',
             'description' => 'nullable|string',
+            'file' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
         ];
     }
 }

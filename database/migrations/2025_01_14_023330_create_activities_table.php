@@ -14,6 +14,7 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->foreignId('user_id')->constrained()->references('user_id')->on('users')->onDelete('cascade');
             $table->foreignId('group_id')->constrained()->references('group_id')->on('groups')->onDelete('cascade');
+            $table->string('file')->nullable();
             $table->timestamps();
         });
     }

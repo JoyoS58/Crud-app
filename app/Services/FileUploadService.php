@@ -11,8 +11,9 @@ class FileUploadService implements FileUploadServiceInterface
 
     public function uploadFile($file, $path, $disk = 'public')
     {
-        $filepath = $file->store($path, $disk);
-        return basename($filepath);
+        $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+        $file->storeAs($path, $filename, $disk);
+        return $filename;
     }
 
     public function deleteFile( $path, $disk = 'public')
