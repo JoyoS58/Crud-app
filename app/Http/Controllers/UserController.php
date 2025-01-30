@@ -11,6 +11,7 @@ use App\Models\User;
 use App\Services\GroupServiceInterface;
 use App\Services\RoleService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 // use App\Services\FileUploadService;
 
@@ -80,6 +81,10 @@ class UserController extends Controller
         try {
             $user = $this->userService->getUserById($id);
             $data = $request->validated();
+            
+            if ($request->filled('current_password') && !Hash::check($request->current_password, $user->password)) {
+                                return redirect()->back()->withErrors(['current_password' => 'Current password is incorrect.']);
+                            }
 
             if ($request->hasFile('profile')) {
                 if (!empty($user->profile)) {

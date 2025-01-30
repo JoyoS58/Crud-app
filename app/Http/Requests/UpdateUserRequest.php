@@ -25,7 +25,7 @@ class UpdateUserRequest extends FormRequest
                 Rule::unique('users')->ignore($userId, 'user_id'),
                 
             ],
-            'current_password' => 'required_with:password|string', 
+            'current_password' => 'required_if:password,!=,null|string',
             'password' => 'nullable|string|min:8|confirmed', 
             'profile' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ];
