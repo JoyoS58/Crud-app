@@ -26,17 +26,20 @@ class MemberController extends Controller
     public function index()
     {
         $members = $this->memberService->getAllMembers();
-        return view('members.index', compact('members'));
+        // return view('members.index', compact('members'));
+        return response()->json(['members' => $members]);
     }
 
     public function create()
     {
-        $count = $this->userService->countUsers();
-        $users = $this->userService->getAllUsers($count);
+        // $count = $this->userService->countUsers();
+        // $users = $this->userService->getAllUsers($count);
+        $users = $this->userService->getAllUsers();
         $groups = $this->groupService->getAllGroups();
         $userId = request()->input('user_id');
         $groupUser = $this->groupService->getGroupsByUserId($userId);
-        return view('members.create', compact('users', 'groups', 'groupUser'));
+        // return view('members.create', compact('users', 'groups', 'groupUser'));
+        return response()->json(['users' => $users, 'groups' => $groups, 'groupUser' => $groupUser]);
     }
 
     public function store(StoreMemberRequest $request)
@@ -47,16 +50,19 @@ class MemberController extends Controller
             $data = $request->validated();
             $this->memberService->createMember($data);
 
-            return redirect()->route('members.index')->with('success', 'Member added successfully');
+            // return redirect()->route('members.index')->with('success', 'Member added successfully');
+            return response()->json(['success' => 'Member added successfully']);
         } catch (\Exception $e) {
-            return redirect()->route('members.index')->with('error', 'Failed to add member');
+            // return redirect()->route('members.index')->with('error', 'Failed to add member');
+            return response()->json(['error' => 'Failed to add member']);
         }
     }
     // Menampilkan detail group
     public function show($id)
     {
         $member = $this->memberService->getMemberById($id);
-        return view('members.show', compact('member'));
+        // return view('members.show', compact('member'));
+        return response()->json(['member' => $member]);
     }
     public function edit($id)
     {
@@ -64,7 +70,8 @@ class MemberController extends Controller
         $count = $this->userService->countUsers();
         $users = $this->userService->getAllUsers($count);
         $groups = $this->groupService->getAllGroups();
-        return view('members.edit', compact('member', 'users', 'groups'));
+        // return view('members.edit', compact('member', 'users', 'groups'));
+        return response()->json(['member' => $member, 'users' => $users, 'groups' => $groups]);
     }
 
     public function update(UpdateMemberRequest $request, $id)
@@ -74,22 +81,26 @@ class MemberController extends Controller
             // $data = $validated->only(['userId', 'groupId', 'join_date', 'status', 'role_in_group']);
             $this->memberService->updateMember($id, $validated);
 
-            return redirect()->route('members.index')->with('success', 'Member updated successfully');
+            // return redirect()->route('members.index')->with('success', 'Member updated successfully');
+            return response()->json(['success' => 'Member updated successfully']);
         } catch (\Exception $e) {
-            return redirect()->route('members.index')->with('error', 'Failed to update member');
+            // return redirect()->route('members.index')->with('error', 'Failed to update member');
+            return response()->json(['error' => 'Failed to update member']);
         }
     }
 
     public function destroy($id)
     {
         $this->memberService->deleteMember($id);
-        return redirect()->route('members.index')->with('success', 'Member deleted successfully');
+        // return redirect()->route('members.index')->with('success', 'Member deleted successfully');
+        return response()->json(['success' => 'Member deleted successfully']);
     }
 
     public function getGroupsByUserId(Request $request)
     {
         $userId = $request->input('user_id');
         $groups = GroupUser::where('user_id', $userId)->with('groups')->get()->pluck('groups');
-        return response()->json($groups);
+        // return response()->json($groups);
+        return response()->json(['groups' => $groups]);
     }
 }

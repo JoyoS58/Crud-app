@@ -6,6 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class StoreUserRequest extends FormRequest
 {
+
     public function authorize()
     {
         return true; 
@@ -13,7 +14,6 @@ class StoreUserRequest extends FormRequest
 
     public function rules()
     {
-        // dd($_REQUEST);
         return [
             'role_id' => 'required|integer',
             'name' => 'required|string',

@@ -28,18 +28,21 @@ class UserController extends Controller
         $this->groupService = $groupService;
         $this->fileUploadService = $fileUploadService;
     }
-    public function index(Request $request)
+    // public function index(Request $request)
+    public function index()
     {
-        $search = $request->input('search');
-        $pageSize = $request->input('pageSize', 5);
+        // $search = $request->input('search');
+        // $pageSize = $request->input('pageSize', 5);
 
         // Ambil data pengguna dari UserService
-        $users = $this->userService->getAllUsers($pageSize, $search);
+        // $users = $this->userService->getAllUsers($pageSize, $search);
+        $users = $this->userService->getAllUsers();
 
         // Tambahkan parameter query ke URL untuk pagination
-        $users->appends($request->only(['search', 'pageSize']));
+        // $users->appends($request->only(['search', 'pageSize']));
 
-        return view('users.index', compact('users'));
+        // return view('users.index', compact('users'));
+        return response()->json(['users' => $users]);
     }
 
     // Menampilkan form untuk menambah pengguna
@@ -54,7 +57,8 @@ class UserController extends Controller
     {
         $data = $request->validated();
         $this->userService->createUser($data);
-        return redirect()->route('users.index')->with('status', 'User created successfully.');
+        // return redirect()->route('users.index')->with('status', 'User created successfully.');
+        return response()->json(['message' => 'User created successfully.']);
     }
 
     // Menampilkan detail pengguna
@@ -64,7 +68,8 @@ class UserController extends Controller
         $roles = $this->roleService->getAllRoles();
         $userRole = $roles->firstWhere('role_id', $user->role_id);
 
-        return view('users.show', compact('user', 'userRole'));
+        // return view('users.show', compact('user', 'userRole'));
+        return response()->json(['user' => $user, 'userRole' => $userRole]);
     }
 
     // Menampilkan form untuk mengedit pengguna
@@ -72,7 +77,8 @@ class UserController extends Controller
     {
         $user = $this->userService->getUserById($id);
         $roles = $this->roleService->getAllRoles();
-        return view('users.edit', compact('user', 'roles'));
+        // return view('users.edit', compact('user', 'roles'));
+        return response()->json(['user' => $user, 'roles' => $roles]);
     }
 
     // Memperbarui data pengguna
@@ -81,10 +87,11 @@ class UserController extends Controller
         try {
             $user = $this->userService->getUserById($id);
             $data = $request->validated();
-            
+
             if ($request->filled('current_password') && !Hash::check($request->current_password, $user->password)) {
-                                return redirect()->back()->withErrors(['current_password' => 'Current password is incorrect.']);
-                            }
+                // return redirect()->back()->withErrors(['current_password' => 'Current password is incorrect.']);
+                throw new \Exception('Current password is incorrect.');
+            }
 
             if ($request->hasFile('profile')) {
                 if (!empty($user->profile)) {
@@ -94,9 +101,11 @@ class UserController extends Controller
             }
 
             $this->userService->updateUser($id, $data);
-            return redirect()->route('users.index')->with('status', 'User updated successfully.');
+            // return redirect()->route('users.index')->with('status', 'User updated successfully.');
+            return response()->json(['message' => 'User updated successfully.']);
         } catch (\Exception $e) {
-            return redirect()->back()->withErrors(['current_password' => $e->getMessage()]);
+            // return redirect()->back()->withErrors(['current_password' => $e->getMessage()]);
+            return response()->json(['message' => $e->getMessage()], 400);
         }
     }
 
@@ -104,7 +113,8 @@ class UserController extends Controller
     public function destroy($id)
     {
         $this->userService->deleteUser($id);
-        return redirect()->route('users.index')->with('status', 'User deleted successfully.');
+        // return redirect()->route('users.index')->with('status', 'User deleted successfully.');
+        return response()->json(['message' => 'User deleted successfully.']);
     }
 
     // Memperbarui role pengguna
