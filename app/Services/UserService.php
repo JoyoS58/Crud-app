@@ -17,7 +17,6 @@ class UserService implements UserServiceInterface
         $this->userRepository = $userRepository;
     }
 
-    // public function getAllUsers($perPage = 5, $search = null)
     public function getAllUsers()
     {
         return $this->userRepository->getAllUsers();

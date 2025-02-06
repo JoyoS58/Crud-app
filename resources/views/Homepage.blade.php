@@ -93,10 +93,5 @@
         </div>
     </div>
 
-    {{-- <!-- Footer Section -->
-    <footer class="bg-primary text-white text-center py-3">
-        <p class="mb-0">© 2025 User Management. All rights reserved.</p>
-        <small>Built with Laravel & Bootstrap</small>
-    </footer> --}}
 </div>
 @endsection

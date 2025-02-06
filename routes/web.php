@@ -1,14 +1,24 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\AuthApiController;
+
+// Route::middleware(['web'])->group(function () {
+//     Route::post('/login', [AuthApiController::class, 'login'])->name('api.login');
+// });
+
+Route::get('login', [AuthController::class, 'showLoginForm'])->name('login');
+Route::get('register', [AuthController::class, 'showRegistrationForm'])->name('register');
+
 // use Illuminate\Support\Facades\Route;
-// use App\Http\Controllers\DashboardController;
-// use App\Http\Controllers\UserController;
-// use App\Http\Controllers\AuthController;
 // use App\Http\Controllers\RoleController;
 // use App\Http\Controllers\GroupController;
 // use App\Http\Controllers\MemberController;
 // use App\Http\Controllers\ActivityController;
-// use App\Http\Controllers\HomeController;
 // use App\Http\Controllers\UserActivityController;
 
 // // /*
@@ -22,7 +32,8 @@
 
 
 
-// Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/home', [HomeController::class, 'index'])->name('home');
 
 // // Halaman login dan register
 // Route::middleware('guest')->group(function () {
@@ -36,8 +47,18 @@
 // Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
 
 // // Halaman dashboard (hanya untuk pengguna yang sudah login)
-// Route::middleware('auth')->group(function () {
-//     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+// Route::middleware(['auth'])->get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+
+Route::middleware('auth')->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::prefix('users')->group(function () {
+        Route::get('/', [UserController::class, 'index'])->name('users.index');
+        Route::get('/create', [UserController::class, 'create'])->name('users.create');
+        Route::get('/{id}', [UserController::class, 'show'])->name('users.show');
+        Route::get('/{id}/edit', [UserController::class, 'edit'])->name('users.edit');
+    });
 
 //     // Rute untuk manajemen pengguna
 //     Route::resource('users', UserController::class);
@@ -62,4 +83,4 @@
 //     // Rute untuk manajemen activities
 //     Route::resource('activities', ActivityController::class);
 //     Route::resource('userActivities', UserActivityController::class);
-// });
+});

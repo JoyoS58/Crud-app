@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Repositories\AuthRepositoryInterface;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
@@ -16,40 +17,53 @@ class AuthService
     {
         $this->authRepository = $authRepository;
     }
+    public function getUserByEmail(string $email)
+    {
+        return $this->authRepository->findUserByEmail($email);
+    }
 
-    public function login($request)
+    public function login($request): array
     {
         try {
-            // Validate the request
-            $validator = Validator::make($request->all(), [
-                'email' => 'required|email',
-                'password' => 'required|string|min:6',
-            ]);
-
-            if ($validator->fails()) {
-                throw new ValidationException($validator);
-            }
-
+            $validator = Validator::make($request->all(), $request->rules());
             $credentials = $validator->validated();
-            $user = $this->authRepository->findUserByEmail($credentials['email']);
+            $email = $credentials['email'];
+            $password = $credentials['password'];
 
-            if (!$user) {
-                return ['status' => false, 'message' => 'Email is not registered'];
-            } elseif (!Hash::check($credentials['password'], $user->password)) {
-                return ['status' => false, 'message' => 'Password is incorrect'];
+            // Find user by email
+            $user = $this->authRepository->findUserByEmail($email);
+
+            // Check if user exists and password is correct
+            if ($user && Hash::check($password, $user->password)) {
+                $token = $user->createToken('auth_token')->plainTextToken;
+                session()->regenerate();
+                Auth::login($user);
+
+                return [
+                    'status' => 'success',
+                    'message' => 'Login berhasil!',
+                    'data' => [
+                        'email' => $user->email,
+                        'token' => $token,
+                        'user' => $user
+                    ]
+                ];
             }
-
-            $token = $user->createToken('auth_token')->plainTextToken;
-            request()->session()->regenerate();
-            Auth::login($user);
-
-            return ['status' => true, 'message' => 'Login success', 'token' => $token];
-        } catch (ValidationException $e) {
-            return ['status' => false, 'message' => 'Validation failed', 'errors' => $e->errors()];
+            // Return failure message if login fails
+            return [
+                'status' => 'error',
+                'message' => 'Email atau password salah.',
+            ];
         } catch (\Exception $e) {
-            return ['status' => false, 'message' => 'An error occurred during login', 'error' => $e->getMessage()];
+            Log::error('Login failed: ' . $e->getMessage());
+            return [
+                'status' => 'error',
+                'message' => 'Terjadi kesalahan saat login.',
+                'error' => $e->getMessage(),
+            ];
         }
     }
+
 
     public function logout()
     {

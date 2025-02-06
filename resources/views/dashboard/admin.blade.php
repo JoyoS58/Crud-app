@@ -16,7 +16,8 @@
                             <i class="fas fa-users fa-3x text-primary"></i>
                         </div>
                         <h5 class="card-title font-weight-bold">User Management</h5>
-                        <p class="card-text">Manage all users in the system, including adding, editing, or removing users.</p>
+                        <p class="card-text">Manage all users in the system, including adding, editing, or removing users.
+                        </p>
                         <a href="{{ route('users.index') }}" class="btn btn-primary btn-sm">Manage Users</a>
                     </div>
                 </div>
@@ -31,7 +32,7 @@
                         </div>
                         <h5 class="card-title font-weight-bold">Role Management</h5>
                         <p class="card-text">Define roles and permissions for better access control.</p>
-                        <a href="{{ route('roles.index') }}" class="btn btn-success btn-sm">Manage Roles</a>
+                        {{-- <a href="{{ route('roles.index') }}" class="btn btn-success btn-sm">Manage Roles</a> --}}
                     </div>
                 </div>
             </div>
@@ -45,7 +46,7 @@
                         </div>
                         <h5 class="card-title font-weight-bold">Group Management</h5>
                         <p class="card-text">Organize users into groups for streamlined collaboration.</p>
-                        <a href="{{ route('groups.index') }}" class="btn btn-info btn-sm">Manage Groups</a>
+                        {{-- <a href="{{ route('groups.index') }}" class="btn btn-info btn-sm">Manage Groups</a> --}}
                     </div>
                 </div>
             </div>
@@ -59,7 +60,7 @@
                         </div>
                         <h5 class="card-title font-weight-bold">Member Management</h5>
                         <p class="card-text">Handle membership information and group associations.</p>
-                        <a href="{{ route('members.index') }}" class="btn btn-warning btn-sm text-white">Manage Members</a>
+                        {{-- <a href="{{ route('members.index') }}" class="btn btn-warning btn-sm text-white">Manage Members</a> --}}
                     </div>
                 </div>
             </div>
@@ -73,7 +74,7 @@
                         </div>
                         <h5 class="card-title font-weight-bold">Activity Management</h5>
                         <p class="card-text">Track and manage activities within the system.</p>
-                        <a href="{{ route('activities.index') }}" class="btn btn-danger btn-sm">Manage Activities</a>
+                        {{-- <a href="{{ route('activities.index') }}" class="btn btn-danger btn-sm">Manage Activities</a> --}}
                     </div>
                 </div>
             </div>
@@ -88,8 +89,10 @@
         }
 
         .card-hover:hover {
-            transform: scale(1.05); /* Slightly enlarge the card */
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2); /* Add a deeper shadow */
+            transform: scale(1.05);
+            /* Slightly enlarge the card */
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            /* Add a deeper shadow */
         }
 
         .card-body {
@@ -158,4 +161,21 @@
             background-color: #218838;
         }
     </style>
+    <script>
+        $.ajax({
+            url: '{{ route('dashboard') }}',
+            type: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + localStorage.getItem('auth_token'),
+                'Accept': 'application/json',
+            },
+            success: function(response) {
+                console.log(response);
+            },
+            error: function(xhr) {
+                console.log(xhr.responseText);
+                alert("Terjadi kesalahan saat mengakses dashboard.");
+            }
+        });
+    </script>
 @endsection

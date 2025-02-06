@@ -57,8 +57,8 @@ class User extends Authenticatable
     }
 
     // Method to create a token
-    public function createToken($tokenName)
-    {
-        return $this->createToken($tokenName)->plainTextToken;
-    }
+    // public function createToken($tokenName)
+    // {
+    //     return $this->createToken($tokenName)->plainTextToken;
+    // }
 }

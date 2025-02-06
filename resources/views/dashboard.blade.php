@@ -79,83 +79,97 @@
             </div>
 
             {{-- <a href="{{ route('') }}" class="btn btn-info btn-sm">Manage Groups</a> --}}
-        </div>
-    </div>
+</div>
+</div>
 
-    <style>
-        .card-hover {
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+<script>
+    $.ajax({
+        url: '{{ route('dashboard') }}',
+        type: 'GET',
+        headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem('auth_token')
+        },
+        success: function(response) {
+            console.log(response);
         }
+    });
+</script>
+<style>
+    .card-hover {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
 
-        .card-hover:hover {
-            transform: scale(1.05); /* Slightly enlarge the card */
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2); /* Add a deeper shadow */
-        }
+    .card-hover:hover {
+        transform: scale(1.05);
+        /* Slightly enlarge the card */
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        /* Add a deeper shadow */
+    }
 
-        .card-body {
-            padding: 20px;
-        }
+    .card-body {
+        padding: 20px;
+    }
 
-        .card-title {
-            font-size: 1.25rem;
-        }
+    .card-title {
+        font-size: 1.25rem;
+    }
 
-        .btn-sm {
-            padding: 8px 15px;
-            font-size: 1rem;
-        }
+    .btn-sm {
+        padding: 8px 15px;
+        font-size: 1rem;
+    }
 
-        .text-primary {
-            color: #007bff !important;
-        }
+    .text-primary {
+        color: #007bff !important;
+    }
 
-        .text-success {
-            color: #28a745 !important;
-        }
+    .text-success {
+        color: #28a745 !important;
+    }
 
-        .text-info {
-            color: #17a2b8 !important;
-        }
+    .text-info {
+        color: #17a2b8 !important;
+    }
 
-        .text-warning {
-            color: #ffc107 !important;
-        }
+    .text-warning {
+        color: #ffc107 !important;
+    }
 
-        .text-danger {
-            color: #dc3545 !important;
-        }
+    .text-danger {
+        color: #dc3545 !important;
+    }
 
-        /* Hero Section */
-        .hero-section {
-            background: linear-gradient(135deg, #007bff, #00bcd4);
-            color: white;
-            text-align: center;
-            padding: 100px 20px;
-            border-radius: 30px;
-        }
+    /* Hero Section */
+    .hero-section {
+        background: linear-gradient(135deg, #007bff, #00bcd4);
+        color: white;
+        text-align: center;
+        padding: 100px 20px;
+        border-radius: 30px;
+    }
 
-        .hero-section h1 {
-            font-size: 3rem;
-            font-weight: 700;
-            margin-bottom: 20px;
-        }
+    .hero-section h1 {
+        font-size: 3rem;
+        font-weight: 700;
+        margin-bottom: 20px;
+    }
 
-        .hero-section p {
-            font-size: 1.2rem;
-        }
+    .hero-section p {
+        font-size: 1.2rem;
+    }
 
-        .hero-section a {
-            font-size: 1.2rem;
-            color: #fff;
-            text-decoration: none;
-            padding: 10px 20px;
-            background-color: #28a745;
-            border-radius: 20px;
-            transition: background-color 0.3s ease;
-        }
+    .hero-section a {
+        font-size: 1.2rem;
+        color: #fff;
+        text-decoration: none;
+        padding: 10px 20px;
+        background-color: #28a745;
+        border-radius: 20px;
+        transition: background-color 0.3s ease;
+    }
 
-        .hero-section a:hover {
-            background-color: #218838;
-        }
-    </style>
+    .hero-section a:hover {
+        background-color: #218838;
+    }
+</style>
 @endsection --}}
