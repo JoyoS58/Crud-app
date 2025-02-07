@@ -4,6 +4,8 @@ use App\Http\Controllers\DashboardApiController;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\AuthApiController;
+use App\Http\Controllers\RoleApiController;
+use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserApiController;
 
 // Route::middleware(['web'])->group(function () {
@@ -49,10 +51,18 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::get('/', [UserApiController::class, 'index'])->name('api.users.index');
             Route::get('/create', [UserApiController::class, 'create'])->name('api.users.create');
             Route::get('/{id}', [UserApiController::class, 'show'])->name('api.users.show');
-            Route::get('/{id}/edit', [UserApiController::class, 'edit'])->name('users.edit');
+            Route::get('/{id}/edit', [UserApiController::class, 'edit'])->name('api.users.edit');
             Route::post('/', [UserApiController::class, 'store'])->name('api.users.store');
             Route::put('/{id}', [UserApiController::class, 'update'])->name('api.users.update');
             Route::delete('/{id}', [UserApiController::class, 'destroy'])->name('api.users.destroy');
+        });
+        Route::prefix('roles')->group(function (){
+            Route::get('/', [RoleApiController::class, 'index'])->name('api.roles.index');
+            Route::get('/{id}', [RoleApiController::class, 'show'])->name('api.roles.show');
+            Route::get('/{id}/edit', [RoleApiController::class, 'edit'])->name('api.roles.edit');
+            Route::post('/', [RoleApiController::class, 'store'])->name('api.roles.store');
+            Route::put('/{id}', [RoleApiController::class, 'update'])->name('api.roles.update');
+            Route::delete('/{id}', [RoleApiController::class, 'destroy'])->name('api.roles.destroy');
         });
     });
 

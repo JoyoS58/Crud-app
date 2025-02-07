@@ -32,7 +32,7 @@
                         </div>
                         <h5 class="card-title font-weight-bold">Role Management</h5>
                         <p class="card-text">Define roles and permissions for better access control.</p>
-                        {{-- <a href="{{ route('roles.index') }}" class="btn btn-success btn-sm">Manage Roles</a> --}}
+                        <a href="{{ route('roles.index') }}" class="btn btn-success btn-sm">Manage Roles</a>
                     </div>
                 </div>
             </div>

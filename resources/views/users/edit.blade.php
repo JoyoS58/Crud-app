@@ -45,7 +45,7 @@
                     <div class="mb-4">
                         <label for="current_password" class="form-label font-weight-bold">Current Password</label>
                         <input type="password" name="current_password" id="current_password" class="form-control">
-                        <small class="form-text text-muted">Required if changing password.</small>
+                        <small class="form-text text-muted">Required if changing data.</small>
                     </div>
 
                     <!-- New Password Field -->
@@ -78,7 +78,6 @@
     <!-- JavaScript Section -->
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            // Extract userId from URL
             // Assuming route format is /users/{userId}/edit, e.g. "/users/5/edit"
             const segments = window.location.pathname.split('/').filter(seg => seg !== "");
             // The userId is the segment immediately before 'edit'

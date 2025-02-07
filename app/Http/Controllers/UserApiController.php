@@ -28,10 +28,11 @@ class UserApiController extends Controller
 
     public function index(Request $request)
     {
+        $count = $this->userService->countUsers();
         $search = $request->query('search', null);
         $users = $this->userService->getAllUsers($search);
 
-        return response()->json(['users' => $users]);
+        return response()->json(['users' => $users, 'count' => $count]);
     }
 
     public function create()

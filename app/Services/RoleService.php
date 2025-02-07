@@ -3,21 +3,27 @@
 namespace App\Services;
 
 use App\Models\User;
+use App\Repositories\RoleRepository;
 use App\Repositories\RoleRepositoryInterface;
 use Illuminate\Support\Facades\Log;
+use PhpParser\Node\Stmt\TryCatch;
 
 class RoleService implements RoleServiceInterface
 {
     protected $roleRepository;
 
-    public function __construct(RoleRepositoryInterface $roleRepository)
+    public function __construct(RoleRepository $roleRepository)
     {
         $this->roleRepository = $roleRepository;
     }
 
-    public function getAllRoles()
+    public function getAllRoles($search = null)
     {
-        return $this->roleRepository->getAllRoles();
+        try {
+            return $this->roleRepository->getAllRoles($search);
+        } catch (\Exception $e) {
+            throw new \Exception("Failed to fetch roles: " . $e->getMessage());
+        }
     }
 
     public function getRoleById($id)
@@ -32,12 +38,42 @@ class RoleService implements RoleServiceInterface
 
     public function updateRole($id, array $data)
     {
-        return $this->roleRepository->updateRole($id, $data);
+        try {
+            $role = $this->roleRepository->updateRole($id, $data);
+
+            if (!$role) {
+                throw new \Exception('Role not found.');
+            }
+            return $this->roleRepository->updateRole($id, $data);
+        } catch (\Exception $e) {
+            throw new \Exception('Failed to update role: ' . $e->getMessage());
+        }
     }
 
     public function deleteRole($id)
     {
-        return $this->roleRepository->deleteRole($id);
+        try {
+            $role = $this->roleRepository->getRoleById($id);
+
+            if (!$role) {
+                return [
+                    'success' => false,
+                    'message' => 'User not found.'
+                ];
+            }
+
+            $this->roleRepository->deleteRole($id);
+
+            return [
+                'success' => true,
+                'message' => 'User deleted successfully.'
+            ];
+        } catch (\Exception $e) {
+            return [
+                'success' => false,
+                'message' => 'Failed to delete user: ' . $e->getMessage()
+            ];
+        }
     }
 
     public function addUserToRole($roleId, $userId)
@@ -67,5 +103,9 @@ class RoleService implements RoleServiceInterface
         $user->save();
 
         return $user;
+    }
+    public function countRoles()
+    {
+        return $this->roleRepository->countRoles();
     }
 }

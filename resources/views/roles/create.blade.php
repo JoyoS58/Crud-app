@@ -15,33 +15,23 @@
         <!-- Role Creation Form -->
         <div class="card shadow-sm">
             <div class="card-body">
-                <form action="{{ route('roles.store') }}" method="POST">
+                <form id="createRoleForm">
                     @csrf
 
                     <!-- Role Name -->
                     <div class="form-group">
                         <label for="role_name" class="font-weight-bold">Role Name</label>
-                        <input type="text" name="role_name" id="role_name"
-                            class="form-control @error('role_name') is-invalid @enderror" placeholder="Enter role name"
-                            value="{{ old('role_name') }}" required>
-                        @error('role_name')
-                            <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                        @enderror
+                        <input type="text" name="role_name" id="role_name" class="form-control"
+                            placeholder="Enter role name" required>
+                        <span class="text-danger" id="error-role_name"></span>
                     </div>
 
                     <!-- Role Description -->
                     <div class="form-group">
                         <label for="role_description" class="font-weight-bold">Description</label>
-                        <textarea name="role_description" id="role_description"
-                            class="form-control @error('role_description') is-invalid @enderror"
-                            placeholder="Enter a brief description for the role">{{ old('role_description') }}</textarea>
-                        @error('role_description')
-                            <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                        @enderror
+                        <textarea name="role_description" id="role_description" class="form-control"
+                            placeholder="Enter a brief description for the role" ></textarea>
+                        <span class="text-danger" id="error-role_description"></span>
                     </div>
 
                     <!-- Form Buttons -->
@@ -53,15 +43,92 @@
                             <i class="fas fa-save"></i> Save Role
                         </button>
                     </div>
+
+                    <!-- Success Message (Optional) -->
+                    <div id="success-message" class="alert alert-success mt-3 d-none"></div>
                 </form>
             </div>
         </div>
     </div>
+
+    <!-- Include SweetAlert Library -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- Custom Script for Role Create -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('createRoleForm').addEventListener('submit', async function(event) {
+                event.preventDefault();
+
+                const form = event.target;
+                const formData = new FormData(form);
+
+                // Bersihkan pesan error sebelumnya
+                document.querySelectorAll('.text-danger').forEach(el => el.textContent = '');
+
+                try {
+                    // Kirim data menggunakan fetch ke endpoint API roles store
+                    const response = await fetch("{{ route('api.roles.store') }}", {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                            'Accept': 'application/json'
+                        }
+                    });
+
+                    // Ambil response sebagai text terlebih dahulu
+                    const text = await response.text();
+                    let data;
+                    try {
+                        data = JSON.parse(text);
+                    } catch (error) {
+                        throw new Error('Server returned HTML instead of JSON.');
+                    }
+
+                    if (!response.ok) {
+                        if (response.status === 422 && data.errors) {
+                            // Tampilkan pesan error validasi untuk masing-masing field
+                            for (let key in data.errors) {
+                                let errorElement = document.getElementById('error-' + key);
+                                if (errorElement) {
+                                    errorElement.textContent = data.errors[key][0];
+                                }
+                            }
+                            Swal.fire({
+                                icon: 'error',
+                                text: 'Please check your input.',
+                                showConfirmButton: true
+                            });
+                        } else {
+                            throw new Error(data.message || 'An error occurred.');
+                        }
+                    } else {
+                        Swal.fire({
+                            icon: 'success',
+                            text: data.message,
+                            showConfirmButton: false,
+                            timer: 2000
+                        }).then(() => {
+                            window.location.href = "{{ route('roles.index') }}";
+                        });
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        text: error.message || 'Server error occurred.',
+                        showConfirmButton: true
+                    });
+                }
+            });
+        });
+    </script>
 @endsection
 
 @section('styles')
     <style>
-        /* Styling for the form */
+        /* Styling for the form controls */
         .form-control {
             border-radius: 8px;
         }
@@ -71,7 +138,7 @@
             border-color: #007bff;
         }
 
-        /* Card shadow and border */
+        /* Card styling */
         .card {
             border: 1px solid #007bff;
             border-radius: 12px;

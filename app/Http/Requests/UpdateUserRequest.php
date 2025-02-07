@@ -32,7 +32,7 @@ class UpdateUserRequest extends FormRequest
     public function messages()
     {
         return [
-            'current_password.required_with' => 'Current password is required when changing the password.',
+            'current_password.required_with' => 'Current password is required.',
             'password.confirmed' => 'The password confirmation does not match.',
         ];
     }

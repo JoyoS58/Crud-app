@@ -6,9 +6,18 @@ use App\Models\Role;
 
 class RoleRepository implements RoleRepositoryInterface
 {
-    public function getAllRoles()
+    public function getAllRoles($search = null)
     {
-        return Role::all();
+        $query = Role::query();
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('role_name', 'LIKE', '%' . $search . '%')
+                    ->orWhere('role_description', 'LIKE', '%' . $search . '%');
+            });
+        }
+
+        return $query->withCount(['users as user_count'])->get();
     }
 
     public function getRoleById($id)
@@ -24,8 +33,7 @@ class RoleRepository implements RoleRepositoryInterface
     public function updateRole($id, array $data)
     {
         $role = $this->getRoleById($id);
-        $role->update($data);
-        return $role;
+        return $role->update($data);
     }
 
     public function deleteRole($id)
@@ -46,5 +54,9 @@ class RoleRepository implements RoleRepositoryInterface
         $role = $this->getRoleById($roleId);
         $role->users()->detach($userId);
         return $role;
+    }
+    public function countRoles()
+    {
+        return Role::count();
     }
 }

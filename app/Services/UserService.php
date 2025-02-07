@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\User;
+use App\Repositories\UserRepository;
 use App\Repositories\UserRepositoryInterface;
 use App\Services\UserServiceInterface;
 use Exception;
@@ -13,7 +14,7 @@ class UserService implements UserServiceInterface
 {
     protected $userRepository;
 
-    public function __construct(UserRepositoryInterface $userRepository)
+    public function __construct(UserRepository $userRepository)
     {
         $this->userRepository = $userRepository;
     }

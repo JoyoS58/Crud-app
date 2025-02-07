@@ -5,7 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\AuthApiController;
+use App\Http\Controllers\RoleController;
 
 // Route::middleware(['web'])->group(function () {
 //     Route::post('/login', [AuthApiController::class, 'login'])->name('api.login');
@@ -15,7 +15,6 @@ Route::get('login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::get('register', [AuthController::class, 'showRegistrationForm'])->name('register');
 
 // use Illuminate\Support\Facades\Route;
-// use App\Http\Controllers\RoleController;
 // use App\Http\Controllers\GroupController;
 // use App\Http\Controllers\MemberController;
 // use App\Http\Controllers\ActivityController;
@@ -61,6 +60,14 @@ Route::middleware('auth')->group(function () {
         Route::get('/{id}', [UserController::class, 'show'])->name('users.show');
         Route::get('/{id}/edit', [UserController::class, 'edit'])->name('users.edit');
     });
+    Route::prefix('roles')->group(function (){
+        Route::get('/', [RoleController::class, 'index'])->name('roles.index');
+        Route::get('/create', [RoleController::class, 'create'])->name('roles.create');
+        Route::get('/{id}', [RoleController::class, 'show'])->name('roles.show');
+        Route::get('/{id}/edit', [RoleController::class, 'edit'])->name('roles.edit');
+    });
+
+    
 
     // Rute untuk manajemen roles
     

@@ -12,7 +12,7 @@
                 <hr class="my-4" style="border-top: 2px solid #007bff; width: 50%;">
             </div>
 
-            <!-- Add User Button, Search -->
+            <!-- Add User Button, Search, and Total Users Box -->
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <a href="{{ route('users.create') }}" class="btn btn-primary btn-lg">
                     <i class="fas fa-user-plus"></i> Add User
@@ -27,9 +27,11 @@
                             </div>
                         </div>
                     </form>
+                    <div class="ml-3 p-2 bg-primary text-white rounded" style="border: 1px solid #007bff;">
+                        <h5 class="mb-0">Total Users: <span id="totalUsers">0</span></h5>
+                    </div>
                 </div>
             </div>
-
             <!-- User Table -->
             <div class="table-responsive shadow-sm rounded">
                 <table class="table table-hover table-striped table-bordered" id="usersTable">
@@ -64,10 +66,13 @@
             if (search.trim() !== '') {
                 url += "?search=" + encodeURIComponent(search);
             }
-            
+
             fetch(url)
                 .then(response => response.json())
                 .then(data => {
+                    // Update box total users
+                    document.getElementById('totalUsers').textContent = data.count;
+
                     const users = data.users;
                     let rows = '';
 

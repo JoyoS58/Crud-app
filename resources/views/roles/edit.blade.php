@@ -4,88 +4,35 @@
     <div class="card p-4 shadow-lg border-1">
         <!-- Page Header -->
         <div class="text-center mb-5">
-            <h1 class="display-4 font-weight-bold text-primary">
-                <i class="fas fa-edit"></i> Edit Role: {{ $role->role_name }}
+            <h1 class="display-5 font-weight-bold text-primary">
+                <i class="fas fa-edit"></i> Edit Role
             </h1>
-            <p class="lead text-muted">Update the role details below.</p>
+            <p class="lead text-muted">
+                Update the role details below.
+            </p>
         </div>
 
         <!-- Edit Role Form -->
         <div class="card shadow-sm rounded-lg">
             <div class="card-body">
-                <form action="{{ route('roles.update', $role->role_id) }}" method="POST">
+                <!-- Form tanpa action karena submission dilakukan via JavaScript -->
+                <form id="editRoleForm" enctype="multipart/form-data">
                     @csrf
-                    @method('PUT')
+                    <!-- Laravel method spoofing: field _method=PUT -->
+                    <input type="hidden" name="_method" value="PUT">
 
-                    <!-- Role Name -->
+                    <!-- Role Name Field -->
                     <div class="mb-4">
                         <label for="role_name" class="form-label font-weight-bold">Role Name</label>
-                        <input type="text" name="role_name" id="role_name"
-                            class="form-control @error('role_name') is-invalid @enderror"
-                            value="{{ old('role_name', $role->role_name) }}" required>
-                        @error('role_name')
-                            <div class="text-danger mt-2">{{ $message }}</div>
-                        @enderror
+                        <input type="text" name="role_name" id="role_name" class="form-control" required>
                     </div>
 
-                    <!-- Role Description -->
+                    <!-- Role Description Field -->
                     <div class="mb-4">
                         <label for="role_description" class="form-label font-weight-bold">Role Description</label>
-                        <textarea name="role_description" id="role_description"
-                            class="form-control @error('role_description') is-invalid @enderror" rows="4">{{ old('role_description', $role->role_description) }}</textarea>
-                        @error('role_description')
-                            <div class="text-danger mt-2">{{ $message }}</div>
-                        @enderror
+                        <textarea name="role_description" id="role_description" class="form-control" rows="4"
+                            placeholder="Enter role description"></textarea>
                     </div>
-
-                    <!-- Add User to Role Section -->
-                    <div style="display: none;">
-
-                        <form id="addUserForm" action="{{ route('roles.addUser', $role->role_id) }}" method="POST"
-                            class="p-4 shadow-sm rounded border" style="display: none;">
-                            @csrf
-                            <div class="mb-3">
-                                <label for="userId" class="form-label">Select User</label>
-                                <select name="userId" id="userId" class="form-select" required>
-                                    <option value="" disabled selected>Search and select a user</option>
-                                    @foreach ($users as $user)
-                                        @if ($user->role_id != $role->role_id && $user->role_id != '1')
-                                            <option value="{{ $user->id }}">{{ $user->name }} ({{ $user->email }})
-                                            </option>
-                                        @endif
-                                    @endforeach
-                                </select>
-                            </div>
-                            <button type="submit" class="btn btn-primary btn-lg">Add User</button>
-                        </form>
-                    </div>
-
-                    <!-- Update User Role Section -->
-                    <hr>
-                    <h3 class="mb-3">Update User Role</h3>
-                    <form id="updateUserRoleForm" action="{{ route('roles.updateUserRole', $role->role_id) }}" method="POST"
-                        class="p-4 shadow-sm rounded border">
-                        @csrf
-                        <div class="mb-3">
-                            <label for="userId" class="form-label">Select User</label>
-                            <select name="userId" id="userId" class="form-select" required>
-                                <option value="" disabled selected>Search and select a user</option>
-                                @foreach ($users as $user)
-                                    @if ($user->role_id != $role->role_id && $user->role_id != '1')
-                                        <!-- Tampilkan hanya user yang tidak memiliki role ini -->
-                                        <option value="{{ $user->user_id }}">{{ $user->name }} ({{ $user->email }})
-                                        </option>
-                                    @endif
-                                @endforeach
-                            </select>
-                        </div>
-                        <button type="submit" class="btn btn-primary btn-lg">Update User Role</button>
-                    </form>
-
-
-
-
-
 
                     <!-- Buttons -->
                     <div class="d-flex justify-content-between mt-4">
@@ -100,87 +47,70 @@
             </div>
         </div>
     </div>
+
+    <!-- JavaScript Section -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Ekstrak roleId dari URL.
+            // Asumsikan URL: /roles/{roleId}/edit, misalnya "/roles/5/edit"
+            const segments = window.location.pathname.split('/').filter(seg => seg !== "");
+            // Role ID adalah segmen sebelum "edit"
+            let roleId = segments[segments.length - 2];
+            console.log("Extracted Role ID:", roleId);
+
+            // Fetch data role dari API untuk mengisi form
+            fetch(`/api/roles/${roleId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.role) {
+                        const role = data.role;
+                        document.getElementById("role_name").value = role.role_name;
+                        document.getElementById("role_description").value = role.role_description || '';
+                    } else {
+                        console.error("Role not found in API response.");
+                    }
+                })
+                .catch(error => console.error("Error fetching role data:", error));
+
+            // Handle form submission via fetch
+            document.getElementById("editRoleForm").addEventListener("submit", async function(e) {
+                e.preventDefault();
+                let formData = new FormData(this);
+                try {
+                    let response = await fetch(`/api/roles/${roleId}`, {
+                        method: "POST", // Menggunakan POST dengan _method=PUT untuk method spoofing
+                        body: formData,
+                        headers: {
+                            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
+                            "Accept": "application/json"
+                        }
+                    });
+                    let data = await response.json();
+                    if (!response.ok) {
+                        throw new Error(data.message || "Failed to update role.");
+                    }
+                    Swal.fire({
+                        icon: "success",
+                        title: "Success",
+                        text: data.message,
+                        showConfirmButton: false,
+                        timer: 2000
+                    }).then(() => {
+                        window.location.href = "/roles";
+                    });
+                } catch (error) {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Error",
+                        text: error.message,
+                        showConfirmButton: true
+                    });
+                }
+            });
+        });
+    </script>
 @endsection
 
 @section('styles')
-    <style>
-        /* Form and Card Styling */
-        .form-control,
-        .form-select {
-            border-radius: 8px;
-            font-size: 1rem;
-            padding: 12px 16px;
-        }
-
-        .form-control:focus,
-        .form-select:focus {
-            box-shadow: 0 0 5px rgba(0, 123, 255, 0.8);
-            border-color: #007bff;
-        }
-
-        .card {
-            border-radius: 12px;
-            border: 1px solid #007bff;
-        }
-
-        .card-body {
-            padding: 2rem;
-        }
-
-        /* Title and form heading */
-        .display-4 {
-            font-size: 2.5rem;
-        }
-
-        .form-label {
-            font-size: 1.1rem;
-            font-weight: bold;
-        }
-
-        /* Buttons */
-        .btn {
-            font-size: 1rem;
-            font-weight: 600;
-            padding: 12px 24px;
-        }
-
-        /* Error messages */
-        .invalid-feedback {
-            font-size: 0.9rem;
-            color: #dc3545;
-        }
-
-        .text-danger {
-            font-size: 0.9rem;
-        }
-
-        /* Spacing between fields */
-        .mb-4 {
-            margin-bottom: 1.5rem;
-        }
-
-        /* Adjust spacing for submit button */
-        .btn-primary,
-        .btn-secondary {
-            font-size: 1rem;
-            font-weight: 600;
-            padding: 12px 30px;
-        }
-
-        /* Align form inputs and buttons for symmetry */
-        .form-select,
-        .form-control {
-            width: 100%;
-            max-width: 500px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        /* Align form container */
-        .card-body {
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-    </style>
+    <link rel="stylesheet" href="{{ asset('css/user-styles.css') }}">
 @endsection

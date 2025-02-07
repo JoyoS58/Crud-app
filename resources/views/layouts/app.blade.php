@@ -125,13 +125,13 @@
                             <i class="fas fa-users"></i>User
                         </a>
                     </li>
-                    {{-- <li class="nav-item"> 
+                    <li class="nav-item"> 
                         <a class="nav-link {{ Request::routeIs('roles*') ? 'active' : '' }}"
                             href="{{ route('roles.index') }}">
                             <i class="fas fa-user-shield"></i>Role
                         </a>
                     </li>
-                    <li class="nav-item">
+                    {{-- <li class="nav-item">
                         <a class="nav-link {{ Request::routeIs('groups*') ? 'active' : '' }}"
                             href="{{ route('groups.index') }}">
                             <i class="fas fa-layer-group"></i>Group
