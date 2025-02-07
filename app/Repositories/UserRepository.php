@@ -6,11 +6,20 @@ use App\Models\User;
 
 class UserRepository implements UserRepositoryInterface
 {
-    // public function getAllUsers($perPage = 5, $search = null)
-    public function getAllUsers()
+    public function getAllUsers($search = null)
     {
-        return User::all();
+        $query = User::query();
+
+        if (!empty($search)) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'LIKE', '%' . $search . '%')
+                    ->orWhere('email', 'LIKE', '%' . $search . '%');
+            });
+        }
+
+        return $query->get();
     }
+
 
     public function getUserById($id)
     {

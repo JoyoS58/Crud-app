@@ -91,7 +91,7 @@
 
 <body onload="loadSidebarState()">
     <!-- Header -->
-    {{-- <div class="header shadow">
+    <div class="header shadow">
         <div class="hamburger" onclick="toggleSidebar()">
             <i class="fas fa-bars"></i>
         </div>
@@ -104,12 +104,13 @@
                 <i class="fas fa-user" style="margin-left: 5px; border-width: 1px"></i>
             @endif
         </div>
-    </div> --}}
+    </div>
 
     <div class="container-fluid">
         <!-- Sidebar -->
         <div class="sidebar shadow">
             <div>
+                <h4>Welcome, {{ Auth::user()->name }}!</h4>
                 <div class=" d-flex align-items-center mb-3 mt-3">
                     <h4><i class="fas fa-house-user mr-2" style="color: #0065d1"></i>
                         <strong>
@@ -117,14 +118,14 @@
                         </strong>
                     </h4>
                 </div>
-                {{-- <ul class="nav nav-pills flex-column mt-3">
+                <ul class="nav nav-pills flex-column mt-3">
                     <li class="nav-item">
                         <a class="nav-link {{ Request::routeIs('users*') ? 'active' : '' }}"
                             href="{{ route('users.index') }}">
                             <i class="fas fa-users"></i>User
                         </a>
                     </li>
-                    <li class="nav-item">
+                    {{-- <li class="nav-item"> 
                         <a class="nav-link {{ Request::routeIs('roles*') ? 'active' : '' }}"
                             href="{{ route('roles.index') }}">
                             <i class="fas fa-user-shield"></i>Role
@@ -147,14 +148,14 @@
                             href="{{ route('activities.index') }}">
                             <i class="fas fa-tasks"></i>Activity
                         </a>
-                    {{-- </li> --}}
+                    </li> --}}
                 <li class="nav-item logout-btn">
                     <!-- Logout Button with AJAX -->
                     <button id="logoutBtn" class="btn btn-danger btn-block nav-link">
                         <i class="fas fa-sign-out-alt"></i> Logout
                     </button>
                 </li>
-                {{-- </ul> --}}
+                </ul>
             </div>
         </div>
 

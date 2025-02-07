@@ -53,6 +53,8 @@ Route::get('/home', [HomeController::class, 'index'])->name('home');
 
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+    // Rute untuk manajemen pengguna
     Route::prefix('users')->group(function () {
         Route::get('/', [UserController::class, 'index'])->name('users.index');
         Route::get('/create', [UserController::class, 'create'])->name('users.create');
@@ -60,10 +62,9 @@ Route::middleware('auth')->group(function () {
         Route::get('/{id}/edit', [UserController::class, 'edit'])->name('users.edit');
     });
 
-//     // Rute untuk manajemen pengguna
-//     Route::resource('users', UserController::class);
+    // Rute untuk manajemen roles
+    
 
-//     // Rute untuk manajemen roles
 //     Route::resource('roles', RoleController::class);
 //     Route::post('roles/{role}/add-user', [RoleController::class, 'addUserToRole'])->name('roles.addUser');
 //     // Route::post('roles/{role}/remove-user', [RoleController::class, 'removeUserFromRole'])->name('roles.removeUser');

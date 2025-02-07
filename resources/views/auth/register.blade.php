@@ -1,4 +1,4 @@
-@extends('layouts.home')
+@extends('layouts.login')
 
 @section('content')
 <div class="container d-flex justify-content-center align-items-center h-90 overflow-hidden mt-5" style="position: fixed">

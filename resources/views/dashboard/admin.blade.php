@@ -162,20 +162,31 @@
         }
     </style>
     <script>
-        $.ajax({
-            url: '{{ route('dashboard') }}',
-            type: 'GET',
-            headers: {
-                'Authorization': 'Bearer ' + localStorage.getItem('auth_token'),
-                'Accept': 'application/json',
-            },
-            success: function(response) {
-                console.log(response);
-            },
-            error: function(xhr) {
-                console.log(xhr.responseText);
-                alert("Terjadi kesalahan saat mengakses dashboard.");
-            }
-        });
+        document.addEventListener('DOMContentLoaded', async () => {
+            const token = localStorage.getItem('auth_token');
+                const response = await fetch('http://127.0.0.1:8000/api/dashboard', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': 'application/json'
+                    }
+                });
+                const data = await response.json();
+            });
+
+        // $.ajax({
+        //     url: '{{ route('dashboard') }}',
+        //     type: 'GET',
+        //     headers: {
+        //         'Authorization': 'Bearer ' + localStorage.getItem('auth_token'),
+        //         'Accept': 'application/json',
+        //     },
+        //     success: function(response) {
+        //         console.log(response);
+        //     },
+        //     error: function(xhr) {
+        //         console.log(xhr.responseText);
+        //         alert("Terjadi kesalahan saat mengakses dashboard.");
+        //     }
+        // });
     </script>
 @endsection

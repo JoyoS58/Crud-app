@@ -26,12 +26,14 @@ class UserApiController extends Controller
         $this->fileUploadService = $fileUploadService;
     }
 
-    // Fetch all users
-    public function index()
+    public function index(Request $request)
     {
-        $users = $this->userService->getAllUsers();
+        $search = $request->query('search', null);
+        $users = $this->userService->getAllUsers($search);
+
         return response()->json(['users' => $users]);
     }
+
     public function create()
     {
         $roles = $this->roleService->getAllRoles();
@@ -39,13 +41,34 @@ class UserApiController extends Controller
     }
     public function store(StoreUserRequest $request)
     {
-        $data = $request->validated();
-        $this->userService->createUser($data);
-        return response()->json(['message' => 'User created successfully.']);
+        try {
+            $data = $request->validated();
+            $result = $this->userService->createUser($data);
+
+            return response()->json([
+                'success' => $result['success'],
+                'message' => $result['message'],
+                'errors' => $result['errors'] ?? null,
+            ], $result['success'] ? 201 : 422);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan pada server.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
 
     // Show user by ID
     public function show($id)
+    {
+        $user = $this->userService->getUserById($id);
+        $roles = $this->roleService->getAllRoles();
+        $userRole = $roles->firstWhere('role_id', $user->role_id);
+
+        return response()->json(['user' => $user, 'userRole' => $userRole]);
+    }
+    public function edit($id)
     {
         $user = $this->userService->getUserById($id);
         $roles = $this->roleService->getAllRoles();
@@ -58,10 +81,14 @@ class UserApiController extends Controller
     {
         try {
             $user = $this->userService->getUserById($id);
+            if (!$user) {
+                return response()->json(['message' => 'User not found.'], 404);
+            }
+
             $data = $request->validated();
 
             if ($request->filled('current_password') && !Hash::check($request->current_password, $user->password)) {
-                throw new \Exception('Current password is incorrect.');
+                return response()->json(['message' => 'Current password is incorrect.'], 400);
             }
 
             if ($request->hasFile('profile')) {
@@ -74,14 +101,19 @@ class UserApiController extends Controller
             $this->userService->updateUser($id, $data);
             return response()->json(['message' => 'User updated successfully.']);
         } catch (\Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 400);
+            return response()->json(['message' => 'Error: ' . $e->getMessage()], 400);
         }
     }
+
 
     // Menghapus pengguna
     public function destroy($id)
     {
-        $this->userService->deleteUser($id);
-        return response()->json(['message' => 'User deleted successfully.']);
+        $result = $this->userService->deleteUser($id);
+
+        return response()->json([
+            'success' => $result['success'],
+            'message' => $result['message']
+        ], $result['success'] ? 200 : 404);
     }
 }

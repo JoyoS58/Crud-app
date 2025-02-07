@@ -46,7 +46,15 @@ class DashboardController extends Controller
         // }
         // return view('dashboard.admin');
         if (Auth::check()) {
-            return view('dashboard.admin');
+            $user = auth()->user();
+            // return view('dashboard.admin');
+            if ($user->role_id == '1') {
+                    return view('dashboard.admin');  // Tampilan admin
+                } elseif ($user->role_id == '2') {
+                    return view('dashboard.member'); // Tampilan member
+                } else {
+                    return view('dashboard.user');   // Tampilan user biasa
+                }
         }
         return redirect()->route('login')->with('error', 'Silakan login dulu.');
     }

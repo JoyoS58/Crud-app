@@ -45,20 +45,18 @@
             height: 100%;
             display: flex;
             flex-direction: column;
-            padding-top: 50px;
         }
         main {
             flex: 1;
             padding-top: 20px;
             margin-top: 20px;
-            overflow:none;
-            Position:fxied
+            overflow:hidden;
             top: 0;
         }
         footer {
             background-color: #f8f9fa;
             padding: 10px 0;
-            /* position:fixed; */
+            position:fixed;
             bottom: 0;
             width: 100%;
             z-index: 1000;

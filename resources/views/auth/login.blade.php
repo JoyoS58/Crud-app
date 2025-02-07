@@ -1,12 +1,12 @@
-@extends('layouts.home')
+@extends('layouts.login')
 
 @section('title', 'Login')
 
 @section('content')
-    <div class="container d-flex justify-content-center align-items-center vh-100 overflow-hidden" style="position: fixed">
+    <div class="container d-flex justify-content-center align-items-center vh-100 overflow-hidden" style="position:fixed">
         <div class="card shadow p-4" style="width: 100%; max-width: 400px; border-radius: 10px;">
             <h3 class="text-center mb-4 text-primary">Login to Your Account</h3>
-            <form id="loginForm" class="needs-validation" novalidate>
+            <form id="loginForm">
                 @csrf
                 <!-- Email Field -->
                 <div class="mb-3">
@@ -17,9 +17,10 @@
                         </span>
                         <input type="email" id="email" name="email" class="form-control"
                             placeholder="Enter your email" required>
-                        <div class="invalid-feedback">
+                        <span id="emailError" class="text-red-500 mt-2"></span>
+                        {{-- <div class="invalid-feedback">
                             Please enter a valid email address.
-                        </div>
+                        </div> --}}
                     </div>
                 </div>
                 <!-- Password Field -->
@@ -31,9 +32,10 @@
                         </span>
                         <input type="password" id="password" name="password" class="form-control"
                             placeholder="Enter your password" required>
-                        <div class="invalid-feedback">
+                        <span id="passwordError" class="text-red-500 mt-2"></span>
+                        {{-- <div class="invalid-feedback">
                             Please enter your password.
-                        </div>
+                        </div> --}}
                     </div>
                 </div>
                 <!-- Remember Me -->
@@ -54,47 +56,71 @@
         </div>
     </div>
     <script>
-        $(document).ready(function() {
-            $('#loginForm').submit(function(e) {
-                e.preventDefault(); // Mencegah form submit default
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault(); // Mencegah form submit secara default
 
-                var formData = {
-                    email: $('#email').val(),
-                    password: $('#password').val()
-                };
+            const email = document.getElementById('email').value;
+            const password = document.querySelector('input[name="password"]').value;
 
-                $('#loginBtn').prop('disabled', true); // Disable tombol saat request berjalan
+            // $('#loginBtn').prop('disabled', true);
 
-                $.ajax({
-                    url: '{{ route('api.login') }}',
-                    type: 'POST',
-                    xhrFields: {
-                        withCredentials: true
-                    }, // Pastikan cookie dikirim
-                    contentType: 'application/json',
-                    data: JSON.stringify(formData),
+            // Hapus pesan error sebelumnya
+            document.getElementById('emailError').innerText = '';
+            document.getElementById('passwordError').innerText = '';
+
+            try {
+                const response = await fetch('http://127.0.0.1:8000/api/login', {
+                    method: 'POST',
                     headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
-                        'Accept': 'application/json'
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute(
+                            'content')
                     },
-                    success: function(response) {
-                        console.log(response);
-                        if (response.status === 'success') {
-                            window.location.href =
-                            '{{ route('dashboard') }}'; // Redirect ke dashboard
-                        } else {
-                            alert(response.message);
-                            $('#loginBtn').prop('disabled', false);
-                        }
-                    },
-                    error: function(xhr) {
-                        console.log(xhr.responseText);
-                        alert("Terjadi kesalahan saat login.");
-                        $('#loginBtn').prop('disabled', false);
-                    }
+                    body: JSON.stringify({
+                        email,
+                        password
+                    })
                 });
 
-            });
+                const result = await response.json();
+
+                if (response.ok && response.status === 200) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Login Berhasil!',
+                        text: result.message,
+                        showConfirmButton: false,
+                        timer: 2000
+                    }).then(() => {
+                        window.location.href = '{{ route('dashboard') }}';
+                    });
+                } else {
+                    // Jika login gagal, tampilkan pesan error
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Login Gagal!',
+                        text: result.message,
+                        confirmButtonColor: '#d33'
+                    });
+
+                    if (result.errors) {
+                        if (result.errors.email) {
+                            document.getElementById('emailError').innerText = result.errors.email[0];
+                        }
+                        if (result.errors.password) {
+                            document.getElementById('passwordError').innerText = result.errors.password[0];
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops!',
+                    text: 'Terjadi kesalahan saat menghubungi server. Coba lagi nanti.',
+                    confirmButtonColor: '#d33'
+                });
+            }
         });
     </script>
 @endsection

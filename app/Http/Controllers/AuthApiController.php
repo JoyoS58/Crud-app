@@ -25,22 +25,8 @@ class AuthApiController extends Controller
 
     public function login(LoginRequest $request)
     {
-        $validated = $request->validated();
-
-        // Coba autentikasi user
-        if (Auth::attempt(['email' => $validated['email'], 'password' => $validated['password']], true)) {
-            $user = Auth::user();
-            session()->regenerate(); // Regenerasi session untuk keamanan
-
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Login berhasil',
-                'user' => $user
-                
-            ], 200);
-        }
-
-        return response()->json(['status' => 'error', 'message' => 'Email atau password salah'], 401);
+            $response = $this->authService->login($request);
+            return response()->json($response, $response['status']);
     }
 
 

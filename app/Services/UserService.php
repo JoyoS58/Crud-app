@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\User;
 use App\Repositories\UserRepositoryInterface;
 use App\Services\UserServiceInterface;
+use Exception;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
@@ -17,10 +18,15 @@ class UserService implements UserServiceInterface
         $this->userRepository = $userRepository;
     }
 
-    public function getAllUsers()
+    public function getAllUsers($search = null)
     {
-        return $this->userRepository->getAllUsers();
+        try {
+            return $this->userRepository->getAllUsers($search);
+        } catch (\Exception $e) {
+            throw new \Exception('Failed to fetch users: ' . $e->getMessage());
+        }
     }
+
 
     public function getUserById($id)
     {
@@ -29,31 +35,82 @@ class UserService implements UserServiceInterface
 
     public function createUser(array $data)
     {
-        return $this->userRepository->createUser($data);
+        try {
+            $user = $this->userRepository->createUser($data);
+
+            return [
+                'success' => true,
+                'message' => 'User created successfully.',
+                'data' => $user,
+                'status' => 201 // Status Created
+            ];
+        } catch (Exception $e) {
+
+            return [
+                'success' => false,
+                'message' => 'Failed to create user: ',
+                'status' => 500 // Status Internal Server Error
+            ];
+        }
     }
+
     public function updateUser($id, array $data)
     {
-        $user = $this->userRepository->getUserById($id);
+        try {
+            $user = $this->userRepository->getUserById($id);
 
-        // Validasi current password jika password baru diisi
-        if (!empty($data['password'])) {
-            if (!Hash::check($data['current_password'], $user->password)) {
-                throw new \Exception('Current password is incorrect.');
+            if (!$user) {
+                throw new \Exception('User not found.');
             }
 
-            // Hash password baru
-            $data['password'] = Hash::make($data['password']);
-        } else {
-            unset($data['password']); // Jangan update password jika kosong
-        }
+            // Jika password baru diisi, validasi current password dan hash password baru
+            if (!empty($data['password'])) {
+                if (!isset($data['current_password']) || !Hash::check($data['current_password'], $user->password)) {
+                    throw new \Exception('Current password is incorrect.');
+                }
+                $data['password'] = Hash::make($data['password']);
+            } else {
+                unset($data['password']);
+            }
 
-        return $this->userRepository->updateUser($id, $data);
+            // Hapus key 'current_password' agar tidak dimasukkan ke query update
+            if (isset($data['current_password'])) {
+                unset($data['current_password']);
+            }
+
+            return $this->userRepository->updateUser($id, $data);
+        } catch (\Exception $e) {
+            throw new \Exception('Failed to update user: ' . $e->getMessage());
+        }
     }
+
 
     public function deleteUser($id)
     {
-        return $this->userRepository->deleteUser($id);
+        try {
+            $user = $this->userRepository->getUserById($id);
+
+            if (!$user) {
+                return [
+                    'success' => false,
+                    'message' => 'User not found.'
+                ];
+            }
+
+            $this->userRepository->deleteUser($id);
+
+            return [
+                'success' => true,
+                'message' => 'User deleted successfully.'
+            ];
+        } catch (\Exception $e) {
+            return [
+                'success' => false,
+                'message' => 'Failed to delete user: ' . $e->getMessage()
+            ];
+        }
     }
+
 
     public function validateUsers(array $userIds)
     {
@@ -63,7 +120,8 @@ class UserService implements UserServiceInterface
             throw new \Exception("One or more users not found.");
         }
     }
-    public function countUsers(){
+    public function countUsers()
+    {
         return $this->userRepository->countUsers();
     }
 }

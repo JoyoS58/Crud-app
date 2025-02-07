@@ -35,31 +35,37 @@ class AuthService
 
             // Check if user exists and password is correct
             if ($user && Hash::check($password, $user->password)) {
-                $token = $user->createToken('auth_token')->plainTextToken;
-                session()->regenerate();
-                Auth::login($user);
+            $token = $user->createToken('auth_token')->plainTextToken;
+            session()->regenerate();
+            Auth::login($user);
 
-                return [
-                    'status' => 'success',
-                    'message' => 'Login berhasil!',
-                    'data' => [
-                        'email' => $user->email,
-                        'token' => $token,
-                        'user' => $user
-                    ]
-                ];
+            return [
+                'status' => 200,
+                'message' => 'Login berhasil!',
+                'data' => [
+                'email' => $user->email,
+                'token' => $token,
+                'user' => $user
+                ]
+            ];
             }
             // Return failure message if login fails
             return [
-                'status' => 'error',
-                'message' => 'Email atau password salah.',
+            'status' => 400,
+            'message' => 'Email atau password salah.',
+            ];
+        } catch (ValidationException $e) {
+            return [
+            'status' => 400,
+            'message' => 'Validasi gagal.',
+            'errors' => $e->errors(),
             ];
         } catch (\Exception $e) {
             Log::error('Login failed: ' . $e->getMessage());
             return [
-                'status' => 'error',
-                'message' => 'Terjadi kesalahan saat login.',
-                'error' => $e->getMessage(),
+            'status' => 500,
+            'message' => 'Terjadi kesalahan saat login.',
+            'error' => $e->getMessage(),
             ];
         }
     }

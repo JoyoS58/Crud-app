@@ -6,10 +6,10 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthApiController;
 use App\Http\Controllers\UserApiController;
 
-Route::middleware(['web'])->group(function () {
+// Route::middleware(['web'])->group(function () {
     Route::post('/login', [AuthApiController::class, 'login'])->name('api.login');
     // Route::post('/logout', [AuthApiController::class, 'logout'])->name('api.logout');
-});
+// });
 // Route::post('login', [AuthApiController::class, 'login'])->name('api.login');
 Route::post('register', [AuthApiController::class, 'register']);
 
@@ -49,6 +49,7 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::get('/', [UserApiController::class, 'index'])->name('api.users.index');
             Route::get('/create', [UserApiController::class, 'create'])->name('api.users.create');
             Route::get('/{id}', [UserApiController::class, 'show'])->name('api.users.show');
+            Route::get('/{id}/edit', [UserApiController::class, 'edit'])->name('users.edit');
             Route::post('/', [UserApiController::class, 'store'])->name('api.users.store');
             Route::put('/{id}', [UserApiController::class, 'update'])->name('api.users.update');
             Route::delete('/{id}', [UserApiController::class, 'destroy'])->name('api.users.destroy');

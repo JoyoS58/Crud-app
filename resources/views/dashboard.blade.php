@@ -83,16 +83,25 @@
 </div>
 
 <script>
-    $.ajax({
-        url: '{{ route('dashboard') }}',
-        type: 'GET',
-        headers: {
-            'Authorization': 'Bearer ' + localStorage.getItem('auth_token')
-        },
-        success: function(response) {
-            console.log(response);
-        }
-    });
+    // $.ajax({
+    //     url: '{{ route('dashboard') }}',
+    //     type: 'GET',
+    //     headers: {
+    //         'Authorization': 'Bearer ' + localStorage.getItem('auth_token')
+    //     },
+    //     success: function(response) {
+    //         console.log(response);
+    //     }
+    // });
+    $(document).ready(function() {
+            if (localStorage.getItem('auth_token')) {
+                $.ajaxSetup({
+                    headers: {
+                        'Authorization': 'Bearer ' + localStorage.getItem('auth_token')
+                    }
+                });
+            }
+        });
 </script>
 <style>
     .card-hover {

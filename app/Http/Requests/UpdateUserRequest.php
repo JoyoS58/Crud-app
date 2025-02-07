@@ -14,8 +14,7 @@ class UpdateUserRequest extends FormRequest
 
     public function rules()
     {
-        $userId = $this->route('user'); 
-        // dd($userId);
+        $userId = $this->route('id'); 
         return [
             'role_id' => 'nullable|integer|exists:roles,role_id',
             'name' => 'required|string|max:255',
